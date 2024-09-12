@@ -135,8 +135,8 @@
 			>
 				<Image
 					x:Name="PreviewImage"
-					Height="30"
 					Stretch="UniformToFill"
+					RenderOptions.EdgeMode="Aliased"
 					RenderOptions.BitmapScalingMode="NearestNeighbor"
 					HorizontalAlignment="Left"
 				/>

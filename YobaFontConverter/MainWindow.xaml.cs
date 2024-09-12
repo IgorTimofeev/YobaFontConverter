@@ -23,6 +23,13 @@ public partial class MainWindow : Window {
 		InitializeComponent();
 
 		FontFamilyComboBox.ItemsSource = FontFamilies;
+		FontFamilyComboBox.SelectedIndex = 0;
+
+		FontFamilyComboBox.SelectionChanged += (s, e) => {
+			if (FontFamilyComboBox.SelectedItem is not FontFamily fontFamily)
+				return;
+
+		};
 	}
 
 	public ObservableCollection<FontFamily> FontFamilies { get; set; } = new(Fonts.SystemFontFamilies.OrderBy(o => o.Source));
@@ -38,6 +45,10 @@ public partial class MainWindow : Window {
 
 
 	async void OnSaveButtonClick(object sender, RoutedEventArgs e) {
+		//FontSizeTextBox.FontFamily = new(new Uri("C:\\Users\\Igor\\AppData\\Local\\Microsoft\\Windows\\Fonts", UriKind.Absolute), "unscii 8 thin");
+
+		//return;
+
 		OpenFolderDialog dialog = new();
 
 		if (dialog.ShowDialog() != true)
@@ -87,6 +98,8 @@ public partial class MainWindow : Window {
 					typeface,
 					fontSize,
 					Brushes.Black,
+					new NumberSubstitution(),
+					TextFormattingMode.Display,
 					VisualTreeHelper.GetDpi(this).PixelsPerDip
 				);
 
