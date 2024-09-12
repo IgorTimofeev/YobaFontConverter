@@ -1,0 +1,153 @@
+﻿<Window
+	x:Class="YobaFontConverter.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:s="clr-namespace:System;assembly=mscorlib"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:YobaFontConverter"
+    mc:Ignorable="d"
+		
+    Title="Yoba | FontConverter"
+
+	Width="505"
+	Height="450"
+	WindowStyle="None"
+	WindowStartupLocation="CenterScreen"
+		
+	Background="{StaticResource ThemeBg1}"
+>
+	<WindowChrome.WindowChrome>
+		<WindowChrome
+			CaptionHeight="0"
+			CornerRadius="0"
+			GlassFrameThickness="0"
+			ResizeBorderThickness="3"
+		/>
+	</WindowChrome.WindowChrome>
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="20"/>
+			<RowDefinition/>
+		</Grid.RowDefinitions>
+
+		<Border
+			x:Name="WindowTopPanel"
+			Background="{StaticResource ThemeBg2}"	
+			MouseDown="WindowTopPanel_MouseDown"
+		>
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
+
+				<Button
+					Grid.Column="1"
+					x:Name="WindowCloseButton"
+					Style="{StaticResource Button}"
+					Width="20px"
+					Height="Auto"
+					Content="X"
+					Click="WindowCloseButton_Click"
+				/>
+			</Grid>
+		</Border>
+		
+		<StackPanel
+			Grid.Row="1"
+			Width="400"
+			VerticalAlignment="Center"
+			HorizontalAlignment="Center"	
+		>
+			<TextBlock
+				Style="{StaticResource TitleTextBlock}"
+				Text="Font family / size"
+			/>
+
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition/>
+					<ColumnDefinition/>
+				</Grid.ColumnDefinitions>
+
+				<ComboBox
+					x:Name="FontFamilyComboBox"
+					SelectedIndex="0"
+				>
+					<ComboBox.ItemTemplate>
+						<DataTemplate DataType="FontFamily">
+							<TextBlock
+								FontFamily="{Binding}"
+								Text="{Binding}"
+							/>
+						</DataTemplate>
+					</ComboBox.ItemTemplate>
+				</ComboBox>
+
+
+				<TextBox
+					Grid.Column="1"
+					Style="{StaticResource TextBox}"
+					Margin="10,0,0,0"
+					x:Name="FontSizeTextBox"
+					Text="16"
+				/>
+			</Grid>
+
+
+			<TextBlock
+				Style="{StaticResource TitleTextBlock}"
+				Text="Codepoints from / to"
+			/>
+
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition/>
+					<ColumnDefinition/>
+				</Grid.ColumnDefinitions>
+
+				<TextBox
+					x:Name="GlyphsFromTextBox"
+					Style="{StaticResource TextBox}"
+					Text="32"
+				/>
+
+				<TextBox
+					Grid.Column="3"
+					x:Name="GlyphsToTextBox"
+					Style="{StaticResource TextBox}"
+					Margin="10,0,0,0"
+					Text="126"
+				/>
+			</Grid>
+
+			<TextBlock
+				Style="{StaticResource TitleTextBlock}"
+				Text="Preview"
+			/>
+
+			<Border
+				Background="#EEE"
+				CornerRadius="5"
+				Padding="5"
+			>
+				<Image
+					x:Name="PreviewImage"
+					Height="30"
+					Stretch="UniformToFill"
+					RenderOptions.BitmapScalingMode="NearestNeighbor"
+					HorizontalAlignment="Left"
+				/>
+			</Border>
+
+			<Button
+				Style="{StaticResource Button}"
+				Margin="0,20,0,0"
+				Content="Export header"
+				Click="OnSaveButtonClick"
+			/>
+		</StackPanel>
+	</Grid>
+</Window>
