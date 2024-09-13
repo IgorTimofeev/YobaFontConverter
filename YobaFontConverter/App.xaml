@@ -17,7 +17,11 @@
 		<SolidColorBrush x:Key="ThemeAccent1" Color="#dcad61"/>
 		<SolidColorBrush x:Key="ThemeAccent2" Color="#997e53"/>
 		<SolidColorBrush x:Key="ThemeAccent3" Color="#473c30"/>
-		
+
+		<SolidColorBrush x:Key="ThemeBad1" Color="#FFDE464D"/>
+		<SolidColorBrush x:Key="ThemeBad2" Color="#FFB12B31"/>
+		<SolidColorBrush x:Key="ThemeBad3" Color="#FF630F13"/>
+
 		<SolidColorBrush x:Key="ThemeCaret" Color="#5ec1ff"/>
 
 		<Style x:Key="TitleTextBlock" TargetType="TextBlock">
@@ -75,53 +79,7 @@
 				</Setter.Value>
 			</Setter>
 		</Style>
-
-		<Style x:Key="Button" TargetType="Button">
-			<Setter Property="SnapsToDevicePixels" Value="True"/>
-			<Setter Property="Height" Value="40"/>
-			<Setter Property="Padding" Value="10,0,10,0"/>
-			<Setter Property="HorizontalContentAlignment" Value="Center"/>
-			<Setter Property="VerticalContentAlignment" Value="Center"/>
-
-			<Setter Property="FontSize" Value="13"/>
-			<Setter Property="Cursor" Value="Hand"/>
-
-			<Setter Property="Background" Value="{StaticResource ThemeAccent1}"/>
-			<Setter Property="BorderBrush" Value="{StaticResource ThemeAccent2}"/>
-			<Setter Property="Foreground" Value="{StaticResource ThemeBg1}"/>
-
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="Button">
-						<Border
-							SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-							Background="{TemplateBinding Background}"
-							CornerRadius="5"
-						>
-							<ContentPresenter
-								HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"	
-								VerticalAlignment="{TemplateBinding VerticalContentAlignment}"	
-							/>
-						</Border>
-
-						<ControlTemplate.Triggers>
-							<Trigger Property="IsMouseOver" Value="True">
-								<Trigger.Setters>
-									<Setter Property="Background" Value="{StaticResource ThemeAccent2}"/>
-								</Trigger.Setters>
-							</Trigger>
-
-							<Trigger Property="IsPressed" Value="True">
-								<Trigger.Setters>
-									<Setter Property="Background" Value="{StaticResource ThemeAccent3}"/>
-								</Trigger.Setters>
-							</Trigger>
-						</ControlTemplate.Triggers>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
-
+		
 		<Style x:Key="ComboBox" TargetType="ComboBox">
 			<Setter Property="SnapsToDevicePixels" Value="True"/>
 			<Setter Property="Height" Value="40"/>
@@ -306,5 +264,107 @@
 				</Setter.Value>
 			</Setter>
 		</Style>
+
+		<Style x:Key="Button" TargetType="Button">
+			<Setter Property="SnapsToDevicePixels" Value="True"/>
+			<Setter Property="Height" Value="40"/>
+			<Setter Property="Padding" Value="10,0,10,0"/>
+			<Setter Property="HorizontalContentAlignment" Value="Center"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+
+			<Setter Property="FontSize" Value="13"/>
+			<Setter Property="Cursor" Value="Hand"/>
+
+			<Setter Property="Background" Value="{StaticResource ThemeAccent1}"/>
+			<Setter Property="Foreground" Value="{StaticResource ThemeBg1}"/>
+
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="Button">
+						<Border
+							SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+							Background="{TemplateBinding Background}"
+							CornerRadius="5"
+						>
+							<ContentPresenter
+								HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"	
+								VerticalAlignment="{TemplateBinding VerticalContentAlignment}"	
+							/>
+						</Border>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+
+			<Style.Triggers>
+				<Trigger Property="IsMouseOver" Value="True">
+					<Trigger.Setters>
+						<Setter Property="Background" Value="{StaticResource ThemeAccent2}"/>
+					</Trigger.Setters>
+				</Trigger>
+
+				<Trigger Property="IsPressed" Value="True">
+					<Trigger.Setters>
+						<Setter Property="Background" Value="{StaticResource ThemeAccent3}"/>
+					</Trigger.Setters>
+				</Trigger>
+			</Style.Triggers>
+		</Style>
+
+		<Style x:Key="WindowActionButton" TargetType="Button" BasedOn="{StaticResource Button}">
+			<Setter Property="Height" Value="Auto"/>
+			<Setter Property="Padding" Value="5,0,5,0"/>
+			<Setter Property="Background" Value="{StaticResource ThemeBg2}"/>
+			<Setter Property="Foreground" Value="{StaticResource ThemeFg4}"/>
+			<Setter Property="FontSize" Value="11"/>
+
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="Button">
+						<Border
+							SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+							Background="{TemplateBinding Background}"
+						>
+							<ContentPresenter
+								HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"	
+								VerticalAlignment="{TemplateBinding VerticalContentAlignment}"	
+							/>	
+						</Border>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+
+			<Style.Triggers>
+				<Trigger Property="IsMouseOver" Value="True">
+					<Trigger.Setters>
+						<Setter Property="Background" Value="{StaticResource ThemeBg3}"/>
+					</Trigger.Setters>
+				</Trigger>
+
+				<Trigger Property="IsPressed" Value="True">
+					<Trigger.Setters>
+						<Setter Property="Background" Value="{StaticResource ThemeBg4}"/>
+					</Trigger.Setters>
+				</Trigger>
+			</Style.Triggers>
+		</Style>
+
+		<Style x:Key="WindowCloseButton" TargetType="Button" BasedOn="{StaticResource WindowActionButton}">
+			<Style.Triggers>
+				<Trigger Property="IsMouseOver" Value="True">
+					<Trigger.Setters>
+						<Setter Property="Background" Value="{StaticResource ThemeBad2}"/>
+						<Setter Property="Foreground" Value="{StaticResource ThemeFg1}"/>
+					</Trigger.Setters>
+				</Trigger>
+
+				<Trigger Property="IsPressed" Value="True">
+					<Trigger.Setters>
+						<Setter Property="Background" Value="{StaticResource ThemeBad3}"/>
+						<Setter Property="Foreground" Value="{StaticResource ThemeFg1}"/>
+					</Trigger.Setters>
+				</Trigger>
+			</Style.Triggers>
+		</Style>
+
 	</Application.Resources>
 </Application>

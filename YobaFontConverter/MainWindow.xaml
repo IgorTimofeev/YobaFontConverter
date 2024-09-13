@@ -8,10 +8,13 @@
     xmlns:local="clr-namespace:YobaFontConverter"
     mc:Ignorable="d"
 		
-    Title="Yoba | FontConverter"
+    Title="YOBA | FontConverter"
 
-	Width="505"
-	Height="450"
+	MinWidth="340"
+	MinHeight="420"
+	Width="470"
+	Height="458"
+
 	WindowStyle="None"
 	WindowStartupLocation="CenterScreen"
 		
@@ -28,7 +31,7 @@
 
 	<Grid>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="20"/>
+			<RowDefinition Height="30"/>
 			<RowDefinition/>
 		</Grid.RowDefinitions>
 
@@ -43,25 +46,30 @@
 					<ColumnDefinition Width="Auto"/>
 				</Grid.ColumnDefinitions>
 
+				<TextBlock
+					Margin="8,0,0,0"
+					VerticalAlignment="Center"
+					Foreground="{StaticResource ThemeFg4}"
+					FontSize="12"
+					Text="YOBA | Font converter"
+				/>
+
 				<Button
 					Grid.Column="1"
 					x:Name="WindowCloseButton"
-					Style="{StaticResource Button}"
-					Background="#880000"
-					Foreground="#EEE"
-					Width="20px"
-					Height="Auto"
+					Style="{StaticResource WindowCloseButton}"
+					Width="30px"
 					Content="X"
 					Click="OnWindowCloseButtonClick"
 				/>
 			</Grid>
 		</Border>
-		
+
 		<StackPanel
 			Grid.Row="1"
-			Width="400"
+			MaxWidth="600"
+			Margin="50,-10,50,0"
 			VerticalAlignment="Center"
-			HorizontalAlignment="Center"	
 		>
 			<TextBlock
 				Style="{StaticResource TitleTextBlock}"
@@ -87,7 +95,7 @@
 				Style="{StaticResource TitleTextBlock}"
 				Text="Font size"
 			/>
-			
+
 			<TextBox
 				Grid.Column="1"
 				Style="{StaticResource TextBox}"

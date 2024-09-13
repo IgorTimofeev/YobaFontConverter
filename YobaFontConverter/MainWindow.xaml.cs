@@ -32,7 +32,9 @@ public partial class MainWindow : Window {
 			DispatcherPriority.ApplicationIdle,
 			async (s, e) => {
 				RenderTimer!.Stop();
+				
 				Render();
+
 				await SaveSettingsAsync();
 			},
 			Dispatcher
@@ -41,8 +43,11 @@ public partial class MainWindow : Window {
 		RenderTimer.Stop();
 
 		FontFamilyComboBox.SelectionChanged += (s, e) => {
-			if (FontFamilyComboBox.SelectedItem is FontFamily fontFamily)
-				EnqueueRender();
+			if (FontFamilyComboBox.SelectedItem is not FontFamily fontFamily)
+				return;
+
+			Settings!.FontFamily = fontFamily.Source;
+			EnqueueRender();
 		};
 
 		void addTextBoxRenderCallback(TextBox textBox) {
