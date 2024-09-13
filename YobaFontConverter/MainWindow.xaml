@@ -35,7 +35,7 @@
 		<Border
 			x:Name="WindowTopPanel"
 			Background="{StaticResource ThemeBg2}"	
-			MouseDown="WindowTopPanel_MouseDown"
+			MouseDown="OnWindowTopPanelMouseDown"
 		>
 			<Grid>
 				<Grid.ColumnDefinitions>
@@ -47,10 +47,12 @@
 					Grid.Column="1"
 					x:Name="WindowCloseButton"
 					Style="{StaticResource Button}"
+					Background="#880000"
+					Foreground="#EEE"
 					Width="20px"
 					Height="Auto"
 					Content="X"
-					Click="WindowCloseButton_Click"
+					Click="OnWindowCloseButtonClick"
 				/>
 			</Grid>
 		</Border>
@@ -63,39 +65,35 @@
 		>
 			<TextBlock
 				Style="{StaticResource TitleTextBlock}"
-				Text="Font family / size"
+				Text="Font family"
 			/>
 
-			<Grid>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition/>
-					<ColumnDefinition/>
-				</Grid.ColumnDefinitions>
+			<ComboBox
+				Style="{StaticResource ComboBox}"
+				x:Name="FontFamilyComboBox"
+				SelectedIndex="0"
+			>
+				<ComboBox.ItemTemplate>
+					<DataTemplate DataType="FontFamily">
+						<TextBlock
+							FontFamily="{Binding}"
+							Text="{Binding}"
+						/>
+					</DataTemplate>
+				</ComboBox.ItemTemplate>
+			</ComboBox>
 
-				<ComboBox
-					x:Name="FontFamilyComboBox"
-					SelectedIndex="0"
-				>
-					<ComboBox.ItemTemplate>
-						<DataTemplate DataType="FontFamily">
-							<TextBlock
-								FontFamily="{Binding}"
-								Text="{Binding}"
-							/>
-						</DataTemplate>
-					</ComboBox.ItemTemplate>
-				</ComboBox>
-
-
-				<TextBox
-					Grid.Column="1"
-					Style="{StaticResource TextBox}"
-					Margin="10,0,0,0"
-					x:Name="FontSizeTextBox"
-					Text="16"
-				/>
-			</Grid>
-
+			<TextBlock
+				Style="{StaticResource TitleTextBlock}"
+				Text="Font size"
+			/>
+			
+			<TextBox
+				Grid.Column="1"
+				Style="{StaticResource TextBox}"
+				x:Name="FontSizeTextBox"
+				Text="16"
+			/>
 
 			<TextBlock
 				Style="{StaticResource TitleTextBlock}"
@@ -129,9 +127,13 @@
 			/>
 
 			<Border
-				Background="#EEE"
+				SnapsToDevicePixels="True"
+				Background="{StaticResource ThemeBg2}"
+				BorderBrush="{StaticResource ThemeBg4}"
+				BorderThickness="1"
 				CornerRadius="5"
 				Padding="5"
+				MinHeight="40"
 			>
 				<Image
 					x:Name="PreviewImage"
@@ -139,6 +141,7 @@
 					RenderOptions.EdgeMode="Aliased"
 					RenderOptions.BitmapScalingMode="NearestNeighbor"
 					HorizontalAlignment="Left"
+					VerticalAlignment="Center"
 				/>
 			</Border>
 

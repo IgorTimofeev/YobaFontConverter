@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
@@ -22,58 +23,120 @@ public partial class MainWindow : Window {
 	public MainWindow() {
 		InitializeComponent();
 
-		FontFamilyComboBox.ItemsSource = FontFamilies;
-		FontFamilyComboBox.SelectedIndex = 0;
+		LoadSettings();
+		FillFontFamilies();
+
+		// Rendering callbacks
+		RenderTimer = new(
+			TimeSpan.FromMilliseconds(500),
+			DispatcherPriority.ApplicationIdle,
+			async (s, e) => {
+				RenderTimer!.Stop();
+				Render();
+				await SaveSettingsAsync();
+			},
+			Dispatcher
+		);
+
+		RenderTimer.Stop();
 
 		FontFamilyComboBox.SelectionChanged += (s, e) => {
-			if (FontFamilyComboBox.SelectedItem is not FontFamily fontFamily)
-				return;
-
+			if (FontFamilyComboBox.SelectedItem is FontFamily fontFamily)
+				EnqueueRender();
 		};
+
+		void addTextBoxRenderCallback(TextBox textBox) {
+			textBox.TextChanged += (s, e) => {
+				if (textBox.Text.Length > 0)
+					EnqueueRender();
+			};
+		}
+
+		addTextBoxRenderCallback(FontSizeTextBox);
+		addTextBoxRenderCallback(GlyphsFromTextBox);
+		addTextBoxRenderCallback(GlyphsToTextBox);
+
+		// Rendering glyphs once on startup
+		Render();
 	}
 
-	public ObservableCollection<FontFamily> FontFamilies { get; set; } = new(Fonts.SystemFontFamilies.OrderBy(o => o.Source));
+	static readonly string AppDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "YobaFontConverter");
+	static readonly string SettingsPath = Path.Combine(AppDataPath, "Settings.json");
 
-	void WindowTopPanel_MouseDown(object sender, MouseButtonEventArgs e) {
-		if (e.LeftButton == MouseButtonState.Pressed)
-			DragMove();
-	}
+	SettingsJSON? Settings = null;
+	FormattedText[]? GlyphsFormattedTexts = null;
+	Typeface? GlyphsTypeface = null;
+	RenderTargetBitmap? GlyphsBitmap = null;
 
-	void WindowCloseButton_Click(object sender, RoutedEventArgs e) {
-		Close();
-	}
+	int
+		GlyphsTotal = 94,
+		GlyphsWidthTotal = 1,
+		GlyphsHeightTotal = 1;
 
+	DispatcherTimer RenderTimer;
 
-	async void OnSaveButtonClick(object sender, RoutedEventArgs e) {
-		//FontSizeTextBox.FontFamily = new(new Uri("C:\\Users\\Igor\\AppData\\Local\\Microsoft\\Windows\\Fonts", UriKind.Absolute), "unscii 8 thin");
+	public ObservableCollection<FontFamily> FontFamilies { get; set; } = [];
 
-		//return;
-
-		OpenFolderDialog dialog = new();
-
-		if (dialog.ShowDialog() != true)
+	void LoadSettings() {
+		if (!File.Exists(SettingsPath)) {
+			Settings = new();
 			return;
+		}
 
-		if (!int.TryParse(FontSizeTextBox.Text, out var fontSize))
-			fontSize = 16;
+		try {
+			Settings = JsonConvert.DeserializeObject<SettingsJSON>(File.ReadAllText(SettingsPath)) ?? new();
+		}
+		catch (Exception ex) {
+			Settings = new();
+			MessageBox.Show(ex.Message);
+			return;
+		}
+	}
 
-		if (!int.TryParse(GlyphsFromTextBox.Text, out var glyphsFrom))
-			glyphsFrom = 32;
+	void FillFontFamilies() {
+		int settingsFontFamilyCounter = 0;
+		int settingsFontFamilyIndex = 0;
 
-		if (!int.TryParse(GlyphsToTextBox.Text, out var glyphsTo))
-			glyphsTo = 126;
+		foreach (var fontFamily in Fonts.SystemFontFamilies.OrderBy(o => o.Source)) {
+			FontFamilies.Add(fontFamily);
 
-		int glyphsTotal = glyphsTo - glyphsFrom + 1;
+			if (fontFamily.Source == Settings!.FontFamily)
+				settingsFontFamilyIndex = settingsFontFamilyCounter;
 
-		if (glyphsTotal <= 0) {
+			settingsFontFamilyCounter++;
+		}
+
+		FontFamilyComboBox.ItemsSource = FontFamilies;
+		FontFamilyComboBox.SelectedIndex = settingsFontFamilyIndex;
+	}
+
+	async Task SaveSettingsAsync() {
+		Directory.CreateDirectory(AppDataPath);
+
+		await File.WriteAllTextAsync(SettingsPath, JsonConvert.SerializeObject(Settings!));
+	}
+
+	void Render() {
+		if (!int.TryParse(FontSizeTextBox.Text, out Settings!.FontSize))
+			Settings.FontSize = 16;
+
+		if (!int.TryParse(GlyphsFromTextBox.Text, out Settings.GlyphsFrom))
+			Settings.GlyphsFrom = 32;
+
+		if (!int.TryParse(GlyphsToTextBox.Text, out Settings.GlyphsTo))
+			Settings.GlyphsTo = 126;
+
+		GlyphsTotal = Settings.GlyphsTo - Settings.GlyphsFrom + 1;
+
+		if (GlyphsTotal <= 0) {
 			MessageBox.Show("Retarded glyphs range");
 			return;
 		}
 
-		FormattedText[] formattedTexts = new FormattedText[glyphsTotal];
+		GlyphsFormattedTexts = new FormattedText[GlyphsTotal];
 		FormattedText formattedText;
 
-		Typeface typeface = new(
+		GlyphsTypeface = new(
 			(FontFamily) FontFamilyComboBox.SelectedItem,
 			FontStyles.Normal,
 			FontWeights.Normal,
@@ -86,18 +149,18 @@ public partial class MainWindow : Window {
 		int width;
 		int height;
 
-		int widthTotal = 1;
-		int heightTotal = 1;
+		GlyphsWidthTotal = 1;
+		GlyphsHeightTotal = 1;
 
 		using (var drawingContext = drawingVisual.RenderOpen()) {
-			for (int i = 0; i < glyphsTotal; i++) {
-				formattedTexts[i] = formattedText = new(
-					((char) (glyphsFrom + i)).ToString(),
+			for (int i = 0; i < GlyphsTotal; i++) {
+				GlyphsFormattedTexts[i] = formattedText = new(
+					((char) (Settings.GlyphsFrom + i)).ToString(),
 					CultureInfo.CurrentUICulture,
 					FlowDirection.LeftToRight,
-					typeface,
-					fontSize,
-					Brushes.Black,
+					GlyphsTypeface,
+					Settings.FontSize,
+					(SolidColorBrush) Application.Current.FindResource("ThemeFg1"),
 					new NumberSubstitution(),
 					TextFormattingMode.Display,
 					VisualTreeHelper.GetDpi(this).PixelsPerDip
@@ -106,8 +169,8 @@ public partial class MainWindow : Window {
 				width = (int) Math.Ceiling(formattedText.WidthIncludingTrailingWhitespace);
 				height = (int) Math.Ceiling(formattedText.Height);
 
-				widthTotal += width;
-				heightTotal = Math.Max(heightTotal, height);
+				GlyphsWidthTotal += width;
+				GlyphsHeightTotal = Math.Max(GlyphsHeightTotal, height);
 
 				drawingContext.DrawText(formattedText, new(x, 0));
 
@@ -115,24 +178,56 @@ public partial class MainWindow : Window {
 			}
 		}
 
-		if (heightTotal > 256) {
-			MessageBox.Show($"Retarded font size, pixel height is {heightTotal}, decrease pls");
+		if (GlyphsHeightTotal > 256) {
+			MessageBox.Show($"Retarded font size, pixel height is {GlyphsHeightTotal}, decrease pls");
 			return;
 		}
 
 		// Rendering
-		RenderTargetBitmap bitmap = new(
-			widthTotal,
-			heightTotal,
+		GlyphsBitmap = new(
+			GlyphsWidthTotal,
+			GlyphsHeightTotal,
 			96,
 			96,
 			PixelFormats.Pbgra32
 		);
 
-		bitmap.Render(drawingVisual);
+		GlyphsBitmap.Render(drawingVisual);
+
+		PreviewImage.Source = GlyphsBitmap;
+		PreviewImage.Height = GlyphsHeightTotal;
+	}
+
+	void EnqueueRender() {
+		RenderTimer.Stop();
+		RenderTimer.Start();
+	}
+
+	void OnWindowTopPanelMouseDown(object sender, MouseButtonEventArgs e) {
+		if (e.LeftButton == MouseButtonState.Pressed)
+			DragMove();
+	}
+
+	void OnWindowCloseButtonClick(object sender, RoutedEventArgs e) {
+		Close();
+	}
+
+	async void OnSaveButtonClick(object sender, RoutedEventArgs e) {
+		if (GlyphsBitmap is null)
+			return;
+
+		var className = $"{FontNameRegex().Replace(GlyphsTypeface!.FontFamily.ToString(), "")}{Settings!.FontSize}Font";
+
+		SaveFileDialog dialog = new() {
+			FileName = $"{className}.h",
+			Filter = "Header files|*.h"
+		};
+
+		if (dialog.ShowDialog() != true)
+			return;
 
 		// Bitmap
-		x = 0;
+		int x = 0;
 
 		StringBuilder
 			glyphsSB = new(),
@@ -164,14 +259,17 @@ public partial class MainWindow : Window {
 			}
 		}
 
-		for (int i = 0; i < formattedTexts.Length; i++) {
-			formattedText = formattedTexts[i];
+		FormattedText formattedText;
+		int width;
+
+		for (int i = 0; i < GlyphsFormattedTexts!.Length; i++) {
+			formattedText = GlyphsFormattedTexts[i];
 
 			width = (int) Math.Ceiling(formattedText.WidthIncludingTrailingWhitespace);
 			pixelStride = width * 4;
-			pixelBuffer = new byte[pixelStride * heightTotal];
+			pixelBuffer = new byte[pixelStride * GlyphsHeightTotal];
 
-			bitmap.CopyPixels(new(x, 0, width, heightTotal), pixelBuffer, pixelStride, 0);
+			GlyphsBitmap.CopyPixels(new(x, 0, width, GlyphsHeightTotal), pixelBuffer, pixelStride, 0);
 
 			x += width;
 
@@ -179,7 +277,7 @@ public partial class MainWindow : Window {
 			if (i > 0)
 				glyphsSB.AppendLine();
 
-			glyphsSB.Append($"\t\t\tGlyph({bitmapGlyphBitIndex}, {width}){(i < formattedTexts.Length - 1 ? "," : "")} // {(formattedText.Text == "\\" ? "backslash" : formattedText.Text)}");
+			glyphsSB.Append($"\t\t\tGlyph({bitmapGlyphBitIndex}, {width}){(i < GlyphsFormattedTexts.Length - 1 ? "," : "")} // {(formattedText.Text == "\\" ? "backslash" : formattedText.Text)}");
 
 			for (int j = 0; j < pixelBuffer.Length; j += 4) {
 				// If alpha has value - there's definitely some pixel data
@@ -195,32 +293,26 @@ public partial class MainWindow : Window {
 				}
 			}
 
-			bitmapGlyphBitIndex += width * heightTotal;
+			bitmapGlyphBitIndex += width * GlyphsHeightTotal;
 		}
 
 		// Last byte
 		if (bitmapByteBitIndex > 0)
 			flushBitmapByte();
 
-		PreviewImage.Source = bitmap;
-		PreviewImage.Height = heightTotal;
-
 		// Saving
-		Directory.CreateDirectory(dialog.FolderName);
-		var name = $"{FontNameRegex().Replace(typeface.FontFamily.ToString(), "")}{fontSize}Font";
-		var className = name[..1].ToUpper() + name[1..];
-		var headerFilePath = Path.Combine(dialog.FolderName, $"{name}.h");
+		Directory.CreateDirectory(Path.GetDirectoryName(dialog.FileName) ?? "");
 
-		using FileStream saveStream = new(headerFilePath, FileMode.Create, FileAccess.Write, FileShare.None);
-		using StreamWriter streamWriter = new(saveStream, Encoding.UTF8);
+		using FileStream fileStream = new(dialog.FileName, FileMode.Create, FileAccess.Write, FileShare.None);
+		using StreamWriter streamWriter = new(fileStream, Encoding.UTF8);
 
 		await streamWriter.WriteAsync($$"""
 class {{className}} : public Font {
 	public:
 		{{className}}() : Font(
-			{{glyphsFrom}},
-			{{glyphsTo}},
-			{{heightTotal}},
+			{{Settings.GlyphsFrom}},
+			{{Settings.GlyphsTo}},
+			{{GlyphsHeightTotal}},
 			_glyphs,
 			_bitmap
 		) {
@@ -228,7 +320,7 @@ class {{className}} : public Font {
 		}
 
 	private:
-		PROGMEM const Glyph _glyphs[{{glyphsTotal}}] = {
+		PROGMEM const Glyph _glyphs[{{GlyphsTotal}}] = {
 {{glyphsSB}}
 		};
 
