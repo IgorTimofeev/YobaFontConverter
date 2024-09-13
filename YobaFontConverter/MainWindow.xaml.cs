@@ -24,7 +24,7 @@ public partial class MainWindow : Window {
 		InitializeComponent();
 
 		LoadSettings();
-		FillFontFamilies();
+		UpdateVisualsFromSettings();
 
 		// Rendering callbacks
 		RenderTimer = new(
@@ -78,27 +78,31 @@ public partial class MainWindow : Window {
 		GlyphsWidthTotal = 1,
 		GlyphsHeightTotal = 1;
 
-	DispatcherTimer RenderTimer;
+	readonly DispatcherTimer RenderTimer;
 
 	public ObservableCollection<FontFamily> FontFamilies { get; set; } = [];
 
 	void LoadSettings() {
-		if (!File.Exists(SettingsPath)) {
-			Settings = new();
-			return;
+		if (File.Exists(SettingsPath)) {
+			try {
+				Settings = JsonConvert.DeserializeObject<SettingsJSON>(File.ReadAllText(SettingsPath)) ?? new();
+			}
+			catch (Exception ex) {
+				Settings = new();
+				MessageBox.Show(ex.Message);
+			}
 		}
-
-		try {
-			Settings = JsonConvert.DeserializeObject<SettingsJSON>(File.ReadAllText(SettingsPath)) ?? new();
-		}
-		catch (Exception ex) {
+		else {
 			Settings = new();
-			MessageBox.Show(ex.Message);
-			return;
 		}
 	}
 
-	void FillFontFamilies() {
+	void UpdateVisualsFromSettings() {
+		GlyphsFromTextBox.Text = Settings!.GlyphsFrom.ToString();
+		GlyphsToTextBox.Text = Settings.GlyphsTo.ToString();
+		FontSizeTextBox.Text = Settings.FontSize.ToString();
+
+		// Font families
 		int settingsFontFamilyCounter = 0;
 		int settingsFontFamilyIndex = 0;
 
@@ -230,6 +234,9 @@ public partial class MainWindow : Window {
 
 		if (dialog.ShowDialog() != true)
 			return;
+
+		// Maybe user had changed name via dialog
+		className = Path.GetFileNameWithoutExtension(className);
 
 		// Bitmap
 		int x = 0;
