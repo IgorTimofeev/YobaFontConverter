@@ -140,12 +140,12 @@
 				BorderBrush="{StaticResource ThemeBg4}"
 				BorderThickness="1"
 				CornerRadius="5"
-				Padding="5"
-				MinHeight="40"
+				Padding="5,0,5,0"
+				Height="40"
 			>
 				<Image
 					x:Name="PreviewImage"
-					Stretch="UniformToFill"
+					Stretch="None"
 					RenderOptions.EdgeMode="Aliased"
 					RenderOptions.BitmapScalingMode="NearestNeighbor"
 					HorizontalAlignment="Left"

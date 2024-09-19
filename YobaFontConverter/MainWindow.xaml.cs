@@ -138,7 +138,6 @@ public partial class MainWindow : Window {
 		GlyphsTotal = Settings.GlyphsTo - Settings.GlyphsFrom + 1;
 
 		if (GlyphsTotal <= 0) {
-			MessageBox.Show("Retarded glyphs range");
 			return;
 		}
 
@@ -181,7 +180,9 @@ public partial class MainWindow : Window {
 				GlyphsWidthTotal += width;
 				GlyphsHeightTotal = Math.Max(GlyphsHeightTotal, height);
 
-				drawingContext.DrawText(formattedText, new(x, 0));
+				if (width > 0) {
+					drawingContext.DrawText(formattedText, new(x, 0));
+				}
 
 				x += width;
 			}
@@ -204,7 +205,7 @@ public partial class MainWindow : Window {
 		GlyphsBitmap.Render(drawingVisual);
 
 		PreviewImage.Source = GlyphsBitmap;
-		PreviewImage.Height = GlyphsHeightTotal * 4;
+		PreviewImage.Height = GlyphsHeightTotal;
 	}
 
 	void EnqueueRender() {
@@ -278,12 +279,6 @@ public partial class MainWindow : Window {
 			formattedText = GlyphsFormattedTexts[i];
 
 			width = (int) Math.Ceiling(formattedText.WidthIncludingTrailingWhitespace);
-			pixelStride = width * 4;
-			pixelBuffer = new byte[pixelStride * GlyphsHeightTotal];
-
-			GlyphsBitmap.CopyPixels(new(x, 0, width, GlyphsHeightTotal), pixelBuffer, pixelStride, 0);
-
-			x += width;
 
 			// Header glyph
 			if (i > 0)
@@ -291,21 +286,30 @@ public partial class MainWindow : Window {
 
 			glyphsSB.Append($"\t\t\tGlyph({bitmapGlyphBitIndex}, {width}){(i < GlyphsFormattedTexts.Length - 1 ? "," : "")} // {(formattedText.Text == "\\" ? "backslash" : formattedText.Text)}");
 
-			for (int j = 0; j < pixelBuffer.Length; j += 4) {
-				// If alpha has value - there's definitely some pixel data
-				if (pixelBuffer[j + 3] > 127)
-					bitmapByte |= 1 << bitmapByteBitIndex;
+			if (width > 0) {
+				pixelStride = width * 4;
+				pixelBuffer = new byte[pixelStride * GlyphsHeightTotal];
 
-				// Flushing byte if required
-				bitmapByteBitIndex += 1;
+				GlyphsBitmap.CopyPixels(new(x, 0, width, GlyphsHeightTotal), pixelBuffer, pixelStride, 0);
 
-				if (bitmapByteBitIndex > 7) {
-					flushBitmapByte();
-					bitmapByteBitIndex = 0;
+				for (int j = 0; j < pixelBuffer.Length; j += 4) {
+					// If alpha has value - there's definitely some pixel data
+					if (pixelBuffer[j + 3] > 127)
+						bitmapByte |= 1 << bitmapByteBitIndex;
+
+					// Flushing byte if required
+					bitmapByteBitIndex += 1;
+
+					if (bitmapByteBitIndex > 7) {
+						flushBitmapByte();
+						bitmapByteBitIndex = 0;
+					}
 				}
+
+				bitmapGlyphBitIndex += width * GlyphsHeightTotal;
 			}
 
-			bitmapGlyphBitIndex += width * GlyphsHeightTotal;
+			x += width;
 		}
 
 		// Last byte
