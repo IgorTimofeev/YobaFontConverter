@@ -204,7 +204,7 @@ public partial class MainWindow : Window {
 		GlyphsBitmap.Render(drawingVisual);
 
 		PreviewImage.Source = GlyphsBitmap;
-		PreviewImage.Height = GlyphsHeightTotal;
+		PreviewImage.Height = GlyphsHeightTotal * 4;
 	}
 
 	void EnqueueRender() {
@@ -293,7 +293,7 @@ public partial class MainWindow : Window {
 
 			for (int j = 0; j < pixelBuffer.Length; j += 4) {
 				// If alpha has value - there's definitely some pixel data
-				if (pixelBuffer[j + 3] > 0)
+				if (pixelBuffer[j + 3] > 127)
 					bitmapByte |= 1 << bitmapByteBitIndex;
 
 				// Flushing byte if required
