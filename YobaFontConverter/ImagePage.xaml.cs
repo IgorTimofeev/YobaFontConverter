@@ -60,35 +60,26 @@ public partial class ImagePage : UserControl {
 		PathTextBox.TextChanged += (s, e) => EnqueueRender();
 
 		// Palette
-		PaletteTextBox.Text = string.Join(", ", App.Settings.Image.Palette.Select(uintColor => $"0x{uintColor:X6}"));
+		PaletteTextBox.Text = string.Join(", ", App.Settings.Image.Palette.Select(o => o.ToString()));
 		PaletteTextBox.TextChanged += (s, e) => EnqueueRender();
 	}
 
 	void Render() {
-		var paletteUints =
+		var paletteSettings =
 			PaletteTextBox.Text
 			.Replace("0x", "")
 			.Split(
 				[',', ' '],
 				StringSplitOptions.RemoveEmptyEntries
 			)
-			.Select(
-				stringColor => uint.TryParse(
-					stringColor,
-					NumberStyles.HexNumber,
-					CultureInfo.CurrentUICulture,
-					out var uintColor
-				)
-				? uintColor
-				: 0
-			).ToArray();
+			.Select(o => new ImageSettingsPaletteColorJSON(o)).ToArray();
 
-		if (paletteUints.Length == 0)
+		if (paletteSettings.Length == 0)
 			return;
 
-		var paletteColors = paletteUints.Select(o => o.ToColor().ChangeAlpha(0xFF)).ToArray();
+		App.Settings.Image.Palette = paletteSettings;
 
-		App.Settings.Image.Palette = paletteUints;
+		var paletteColors = paletteSettings.Select(o => o.Enabled ? (Color?) o.Value.ToColor().ChangeAlpha(0xFF) : null).ToArray();
 
 		if (!File.Exists(PathTextBox.Text))
 			return;
@@ -122,7 +113,8 @@ public partial class ImagePage : UserControl {
 			closestDelta,
 			delta;
 
-		Color originalColor, paletteColor;
+		Color? paletteColor;
+		Color originalColor;
 
 		for (int oc = 0; oc < pixels.Length; oc += 4) {
 			originalColor = Color.FromArgb(
@@ -139,9 +131,12 @@ public partial class ImagePage : UserControl {
 			for (int pi = 0; pi < paletteColors.Length; pi++) {
 				paletteColor = paletteColors[pi];
 
-				deltaR = paletteColor.R - originalColor.R;
-				deltaG = paletteColor.G - originalColor.G;
-				deltaB = paletteColor.B - originalColor.B;
+				if (paletteColor is null)
+					continue;
+
+				deltaR = paletteColor.Value.R - originalColor.R;
+				deltaG = paletteColor.Value.G - originalColor.G;
+				deltaB = paletteColor.Value.B - originalColor.B;
 
 				delta = Math.Sqrt(deltaR * deltaR + deltaG * deltaG + deltaB * deltaB);
 
@@ -151,13 +146,13 @@ public partial class ImagePage : UserControl {
 				}
 			}
 
-			paletteColor = paletteColors[closestIndex];
+			paletteColor = paletteColors[closestIndex]!;
 
 			// Updating pixels with closest color data
 			pixels[oc + 3] = 0xFF;
-			pixels[oc + 2] = paletteColor.R;
-			pixels[oc + 1] = paletteColor.G;
-			pixels[oc] = paletteColor.B;
+			pixels[oc + 2] = paletteColor.Value.R;
+			pixels[oc + 1] = paletteColor.Value.G;
+			pixels[oc] = paletteColor.Value.B;
 		}
 
 		convertedImage.WritePixels(

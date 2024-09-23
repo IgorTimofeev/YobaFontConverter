@@ -80,8 +80,8 @@ public partial class FontPage : UserControl {
 	public ObservableCollection<FontFamily> FontFamilies { get; set; } = [];
 
 	void UpdateVisualsFromSettings() {
-		GlyphsFromTextBox.Text = App.Settings.Font.GlyphsFrom.ToString();
-		GlyphsToTextBox.Text = App.Settings.Font.GlyphsTo.ToString();
+		GlyphsFromTextBox.Text = App.Settings.Font.From.ToString();
+		GlyphsToTextBox.Text = App.Settings.Font.To.ToString();
 		FontSizeTextBox.Text = App.Settings.Font.Size.ToString();
 
 		// Font families
@@ -105,13 +105,13 @@ public partial class FontPage : UserControl {
 		if (!int.TryParse(FontSizeTextBox.Text, out App.Settings.Font.Size))
 			App.Settings.Font.Size = 16;
 
-		if (!int.TryParse(GlyphsFromTextBox.Text, out App.Settings.Font.GlyphsFrom))
-			App.Settings.Font.GlyphsFrom = 32;
+		if (!int.TryParse(GlyphsFromTextBox.Text, out App.Settings.Font.From))
+			App.Settings.Font.From = 32;
 
-		if (!int.TryParse(GlyphsToTextBox.Text, out App.Settings.Font.GlyphsTo))
-			App.Settings.Font.GlyphsTo = 126;
+		if (!int.TryParse(GlyphsToTextBox.Text, out App.Settings.Font.To))
+			App.Settings.Font.To = 126;
 
-		GlyphsTotal = App.Settings.Font.GlyphsTo - App.Settings.Font.GlyphsFrom + 1;
+		GlyphsTotal = App.Settings.Font.To - App.Settings.Font.From + 1;
 
 		if (GlyphsTotal <= 0) {
 			return;
@@ -139,7 +139,7 @@ public partial class FontPage : UserControl {
 		using (var drawingContext = drawingVisual.RenderOpen()) {
 			for (int i = 0; i < GlyphsTotal; i++) {
 				GlyphsFormattedTexts[i] = formattedText = new(
-					((char) (App.Settings.Font.GlyphsFrom + i)).ToString(),
+					((char) (App.Settings.Font.From + i)).ToString(),
 					CultureInfo.CurrentUICulture,
 					FlowDirection.LeftToRight,
 					GlyphsTypeface,
@@ -293,8 +293,8 @@ public partial class FontPage : UserControl {
 class {{className}} : public Font {
 	public:
 		{{className}}() : Font(
-			{{App.Settings.Font.GlyphsFrom}},
-			{{App.Settings.Font.GlyphsTo}},
+			{{App.Settings.Font.From}},
+			{{App.Settings.Font.To}},
 			{{GlyphsHeightTotal}},
 			_glyphs,
 			_bitmap

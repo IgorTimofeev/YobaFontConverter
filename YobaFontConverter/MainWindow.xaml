@@ -16,7 +16,6 @@
 	Height="458"
 
 	WindowStyle="None"
-	WindowStartupLocation="CenterScreen"
 		
 	Background="{StaticResource ThemeBg1}"
 >
@@ -66,16 +65,18 @@
 		</Border>
 		
 		<TabControl
+			x:Name="TabControl"
 			Style="{StaticResource TabControl}"
 			Grid.Row="1"
 			
 			TabStripPlacement="Left"
+			SelectionChanged="OnTabControlSelectionChanged"
 		>
 			<TabItem
 				Style="{StaticResource TabItem}"
 			>
 				<TabItem.Header>
-					Fonts
+					Font
 				</TabItem.Header>
 
 				<TabItem.Content>
@@ -87,7 +88,7 @@
 				Style="{StaticResource TabItem}"
 			>
 				<TabItem.Header>
-					Images
+					Image
 				</TabItem.Header>
 
 				<TabItem.Content>

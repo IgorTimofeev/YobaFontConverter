@@ -8,6 +8,12 @@ namespace YobaFontConverter;
 
 public partial class App : Application {
 	public App() {
+		LoadSettings();
+	}
+
+	public static SettingsJSON Settings;
+
+	public static void LoadSettings() {
 		if (File.Exists(Constants.SettingsPath)) {
 			try {
 				Settings = JsonConvert.DeserializeObject<SettingsJSON>(File.ReadAllText(Constants.SettingsPath)) ?? new();
@@ -22,16 +28,10 @@ public partial class App : Application {
 		}
 	}
 
-	public static SettingsJSON Settings;
-
-	public static void LoadSettings() {
-		
-	}
-
 	public static async Task SaveSettingsAsync() {
 		Directory.CreateDirectory(Constants.AppDataPath);
 
-		await File.WriteAllTextAsync(Constants.SettingsPath, JsonConvert.SerializeObject(Settings!));
+		await File.WriteAllTextAsync(Constants.SettingsPath, JsonConvert.SerializeObject(Settings!, Formatting.Indented));
 	}
 }
 
