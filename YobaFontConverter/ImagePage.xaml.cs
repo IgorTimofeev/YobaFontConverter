@@ -21,6 +21,7 @@ using System.Windows.Navigation;
 using System.Windows.Threading;
 using ColorEx;
 using ColorEx.Wpf;
+using Newtonsoft.Json.Linq;
 
 namespace YobaFontConverter;
 
@@ -60,7 +61,7 @@ public partial class ImagePage : UserControl {
 		PathTextBox.TextChanged += (s, e) => EnqueueRender();
 
 		// Palette
-		PaletteTextBox.Text = string.Join(", ", App.Settings.Image.Palette.Select(o => o.ToString()));
+		PaletteTextBox.Text = string.Join(", ", App.Settings.Image.Palette.Select(o => $"{(o >= 0 ? "" : '-')}0x{Math.Abs(o):X6}"));
 		PaletteTextBox.TextChanged += (s, e) => EnqueueRender();
 	}
 
@@ -72,14 +73,36 @@ public partial class ImagePage : UserControl {
 				[',', ' '],
 				StringSplitOptions.RemoveEmptyEntries
 			)
-			.Select(o => new ImageSettingsPaletteColorJSON(o)).ToArray();
+			.Select(
+				stringColor => {
+					var negative = false;
+
+					// Hex numbers can't be parsed with trailing sign :(
+					if (stringColor.StartsWith('-') && stringColor.Length > 1) {
+						stringColor = stringColor[1..];
+						negative = true;
+					}
+
+					int.TryParse(
+						stringColor,
+						NumberStyles.HexNumber,
+						CultureInfo.CurrentUICulture,
+						out var intColor
+					);
+
+					if (negative)
+						intColor *= -1;
+
+					return intColor;
+				}
+			).ToArray();
 
 		if (paletteSettings.Length == 0)
 			return;
 
 		App.Settings.Image.Palette = paletteSettings;
 
-		var paletteColors = paletteSettings.Select(o => o.Enabled ? (Color?) o.Value.ToColor().ChangeAlpha(0xFF) : null).ToArray();
+		var paletteColors = paletteSettings.Select(o => o >= 0 ? (Color?) ((uint) o).ToColor().ChangeAlpha(0xFF) : null).ToArray();
 
 		if (!File.Exists(PathTextBox.Text))
 			return;

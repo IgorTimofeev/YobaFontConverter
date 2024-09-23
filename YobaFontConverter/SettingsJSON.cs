@@ -22,48 +22,13 @@ public enum ImageSettingsMode : byte {
 	Palette
 }
 
-public class ImageSettingsPaletteColorJSON {
-	public ImageSettingsPaletteColorJSON() {
-		
-	}
-
-	public ImageSettingsPaletteColorJSON(uint value, bool enabled = true) {
-		Value = value;
-		Enabled = enabled;
-	}
-
-	public ImageSettingsPaletteColorJSON(string stringValue) {
-		if (stringValue.StartsWith('-') && stringValue.Length > 1) {
-			Enabled = false;
-			stringValue = stringValue[1..];
-		}
-		else {
-			Enabled = true;
-		}
-
-		uint.TryParse(
-			stringValue,
-			NumberStyles.HexNumber,
-			CultureInfo.CurrentUICulture,
-			out Value
-		);
-	}
-
-	public uint Value;
-	public bool Enabled;
-
-	public override string ToString() {
-		return $"{(Enabled ? "" : '-')}0x{Value:X6}";
-	}
-}
-
 public class ImageSettingsJSON {
 	public ImageSettingsMode Mode = ImageSettingsMode.Default16Bit;
 
-	public ImageSettingsPaletteColorJSON[] Palette = [
-		new(0x000000),
-		new(0xFF00FF, false),
-		new(0xFFFFFF)
+	public int[] Palette = [
+		0x000000,
+		-0xFFFFFF,
+		0x000000
 	];
 
 	public string Path = string.Empty;
