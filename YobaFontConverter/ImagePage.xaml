@@ -32,14 +32,13 @@
 				SelectedIndex="0"
 			>
 				<ComboBox.Items>
-					<s:String>Palette</s:String>
+					<s:String>8 bit palette</s:String>
 				</ComboBox.Items>
 			</ComboBox>
 
 			<TextBlock
 				Style="{StaticResource TitleTextBlock}"
-				TextWrapping="Wrap"
-				Text="Comma-separated colors in 0xRRGGBB format. Negative values will be ignored"
+				Text="Comma-separated colors in 0xRRGGBB format. To ignore specific color, mark it as negative"
 			/>
 			
 			<TextBox

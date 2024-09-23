@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Data;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows;
 
 namespace YobaFontConverter;
@@ -12,6 +13,9 @@ public partial class App : Application {
 	}
 
 	public static SettingsJSON Settings;
+
+	[GeneratedRegex(@"\W+")]
+	public static partial Regex GetHeaderNameRegex();
 
 	public static void LoadSettings() {
 		if (File.Exists(Constants.SettingsPath)) {

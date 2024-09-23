@@ -28,6 +28,7 @@
 			<Setter Property="Margin" Value="0,10,0,5"/>
 			<Setter Property="FontSize" Value="12"/>
 			<Setter Property="Foreground" Value="{StaticResource ThemeFg4}"/>
+			<Setter Property="TextWrapping" Value="Wrap"/>
 		</Style>
 
 		<Style x:Key="TextBox" TargetType="TextBox">

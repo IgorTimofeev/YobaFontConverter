@@ -52,6 +52,12 @@ public partial class ImagePage : UserControl {
 
 	readonly DispatcherTimer RenderTimer;
 
+	int
+		ExportWidth = 0,
+		ExportHeight = 0;
+
+	byte[] ExportBitmap = [];
+
 	void UpdateVisualsFromSettings() {
 		// Mode
 		ModeComboBox.SelectedIndex = (byte) App.Settings.Image.Mode;
@@ -112,21 +118,26 @@ public partial class ImagePage : UserControl {
 		BitmapImage originalImage = new(new Uri(PathTextBox.Text, UriKind.Absolute));
 		PreviewImageOriginal.Source = originalImage;
 
+		// Conversion itself
+		ExportWidth = originalImage.PixelWidth;
+		ExportHeight = originalImage.PixelHeight;
+
 		WriteableBitmap convertedImage = new(
-			originalImage.PixelWidth,
-			originalImage.PixelHeight,
+			ExportWidth,
+			ExportHeight,
 			96,
 			96,
 			PixelFormats.Pbgra32,
 			null
 		);
 
-		var stride = originalImage.PixelWidth * 4;
-		var pixels = new byte[stride * originalImage.PixelHeight];
+		var stride = ExportWidth * 4;
+		var pixels = new byte[stride * ExportHeight];
 
 		originalImage.CopyPixels(pixels, stride, 0);
 
 		int
+			exportBitmapIndex = 0,
 			closestIndex,
 			deltaR,
 			deltaG,
@@ -138,6 +149,8 @@ public partial class ImagePage : UserControl {
 
 		Color? paletteColor;
 		Color originalColor;
+
+		ExportBitmap = new byte[ExportWidth * ExportHeight];
 
 		for (int oc = 0; oc < pixels.Length; oc += 4) {
 			originalColor = Color.FromArgb(
@@ -176,10 +189,13 @@ public partial class ImagePage : UserControl {
 			pixels[oc + 2] = paletteColor.Value.R;
 			pixels[oc + 1] = paletteColor.Value.G;
 			pixels[oc] = paletteColor.Value.B;
+
+			ExportBitmap[exportBitmapIndex] = (byte) closestIndex;
+			exportBitmapIndex++;
 		}
 
 		convertedImage.WritePixels(
-			new(0, 0, originalImage.PixelWidth, originalImage.PixelHeight),
+			new(0, 0, ExportWidth, ExportHeight),
 			pixels,
 			stride,
 			0
@@ -205,7 +221,69 @@ public partial class ImagePage : UserControl {
 		EnqueueRender();
 	}
 
-	void OnSaveButtonClick(object sender, RoutedEventArgs e) {
+	async void OnSaveButtonClick(object sender, RoutedEventArgs e) {
+		var className = $"{App.GetHeaderNameRegex().Replace(Path.GetFileNameWithoutExtension(PathTextBox.Text), "")}Image";
 
+		SaveFileDialog dialog = new() {
+			Title = "Export image",
+			FileName = $"{className}.h",
+			Filter = "Header files|*.h"
+		};
+
+		if (dialog.ShowDialog() != true)
+			return;
+
+		// Maybe user had changed name via dialog
+		className = Path.GetFileNameWithoutExtension(dialog.FileName);
+
+		using FileStream fileStream = new(dialog.FileName, FileMode.Create, FileAccess.Write, FileShare.None);
+		using StreamWriter streamWriter = new(fileStream, Encoding.UTF8);
+
+		StringBuilder sb = new("\t\t\t");
+
+		int lineCounter = 0;
+
+		for (int i = 0; i < ExportBitmap.Length; i++) {
+			if (lineCounter > 0)
+				sb.Append(' ');
+
+			sb
+				.Append("0x")
+				.Append(ExportBitmap[i].ToString("X2"));
+
+			if (i < ExportBitmap.Length - 1) {
+				sb.Append(',');
+
+				lineCounter++;
+
+				if (lineCounter >= 16) {
+					sb
+						.AppendLine()
+						.Append("\t\t\t");
+
+					lineCounter = 0;
+				}
+			}
+		}
+
+		await streamWriter.WriteAsync($$"""
+class {{className}} : public Image {
+	public:
+		{{className}}() : Image(
+			Size(
+				{{ExportWidth}},
+				{{ExportHeight}}
+			),
+			_bitmap
+		) {
+			
+		}
+
+	private:
+		PROGMEM const uint8_t _bitmap[{{ExportBitmap.Length}}] = {
+{{sb}}
+		};
+};
+""");
 	}
 }

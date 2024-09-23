@@ -193,9 +193,10 @@ public partial class FontPage : UserControl {
 		if (GlyphsBitmap is null)
 			return;
 
-		var className = $"{FontNameRegex().Replace(GlyphsTypeface!.FontFamily.ToString(), "")}{App.Settings.Font.Size}Font";
+		var className = $"{App.GetHeaderNameRegex().Replace(GlyphsTypeface!.FontFamily.ToString(), "")}{App.Settings.Font.Size}Font";
 
 		SaveFileDialog dialog = new() {
+			Title = "Export font",
 			FileName = $"{className}.h",
 			Filter = "Header files|*.h"
 		};
@@ -313,7 +314,4 @@ class {{className}} : public Font {
 };
 """);
 	}
-
-	[GeneratedRegex(@"\W+")]
-	private static partial Regex FontNameRegex();
 }
