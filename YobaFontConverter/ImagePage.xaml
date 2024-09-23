@@ -32,102 +32,48 @@
 				SelectedIndex="0"
 			>
 				<ComboBox.Items>
-					<s:String>Palette, 8 bit</s:String>
+					<s:String>Palette</s:String>
 				</ComboBox.Items>
 			</ComboBox>
 
 			<TextBlock
 				Style="{StaticResource TitleTextBlock}"
-				Text="Palette"
+				Text="Comma-separated palette colors in 0xRRGGBB format"
+			/>
+
+			<TextBox
+				Grid.Column="1"
+				Style="{StaticResource TextBox}"
+				x:Name="PaletteTextBox"
+				Text="0x000000, 0xFFFFFF"
+			/>
+
+			<TextBlock
+				Style="{StaticResource TitleTextBlock}"
+				Text="Image path"
 			/>
 
 			<Grid>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition/>
 					<ColumnDefinition Width="Auto"/>
-					<ColumnDefinition Width="Auto"/>
-					<ColumnDefinition Width="Auto"/>
 				</Grid.ColumnDefinitions>
 
 				<TextBox
 					Style="{StaticResource TextBox}"
-					x:Name="PaletteTextBox"
-					Text="0xFFFFFF"
-					Visibility="Collapsed"
-					TextChanged="PaletteTextBox_TextChanged"
-					KeyDown="PaletteTextBox_KeyDown"
+					x:Name="PathTextBox"
+					IsReadOnly="True"
 				/>
 
-				<ComboBox
-					Style="{StaticResource ComboBox}"
-					x:Name="PaletteComboBox"
-				>
-					<ComboBox.ItemTemplate>
-						<DataTemplate
-							DataType="s:UInt32"
-						>
-							<StackPanel
-								Orientation="Horizontal"	
-							>
-								<Ellipse
-									Width="20"
-									Height="20"
-									VerticalAlignment="Center"
-									Fill="{Binding Path='', Converter={local:UintToSolidColorBrushConverter}}"
-								/>
-
-								<TextBlock
-									Margin="8,0,0,0"
-									VerticalAlignment="Center"
-									Text="{Binding Path='', Converter={local:UintToHexStringConverter}}"
-								/>
-							</StackPanel>
-						</DataTemplate>
-					</ComboBox.ItemTemplate>
-				</ComboBox>
-
 				<Button
-					x:Name="PaletteRemoveButton"
 					Grid.Column="1"
 					Style="{StaticResource SecondaryButton}"
-					Width="40"
 					Margin="10,0,0,0"
-					Content="-"
-					Click="PaletteRemoveButton_Click"
-				/>
-
-				<Button
-					x:Name="PaletteAddButton"
-					Grid.Column="2"
-					Style="{StaticResource SecondaryButton}"
 					Width="40"
-					Margin="10,0,0,0"
-					Content="+"
-					Click="PaletteAddButton_Click"
-				/>
-
-				<Button
-					x:Name="PaletteEditButton"
-					Grid.Column="3"
-					Style="{StaticResource SecondaryButton}"
-					Width="40"
-					Margin="10,0,0,0"
-					Content="✎"
-					Click="PaletteEditButton_Click"
+					Content="📁"
+					Click="OnPathButtonClick"
 				/>
 			</Grid>
-
-			<TextBlock
-				Style="{StaticResource TitleTextBlock}"
-				Text="Source"
-			/>
-
-			<TextBox
-				Grid.Column="1"
-				Style="{StaticResource TextBox}"
-				x:Name="PathTextBox"
-				Text="16"
-			/>
 
 			<TextBlock
 				Style="{StaticResource TitleTextBlock}"
@@ -135,23 +81,39 @@
 			/>
 
 			<Border
+				SnapsToDevicePixels="True"
+				Height="100"
 				Padding="5"
 				CornerRadius="5"
 				Background="{StaticResource ThemeBg2}"
 				BorderThickness="1"
 				BorderBrush="{StaticResource ThemeBg3}"
 			>
-				<Image
-					Height="100"
-					Stretch="Uniform"
-				>
-				</Image>
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition/>
+						<ColumnDefinition/>
+					</Grid.ColumnDefinitions>
+					
+					<Image
+						x:Name="PreviewImageOriginal"
+						Stretch="Uniform"
+						RenderOptions.BitmapScalingMode="NearestNeighbor"
+					/>
+
+					<Image
+						Grid.Column="1"
+						x:Name="PreviewImageConverted"
+						Stretch="Uniform"
+						RenderOptions.BitmapScalingMode="NearestNeighbor"
+					/>
+				</Grid>
 			</Border>
 
 			<Button
 				Style="{StaticResource Button}"
 				Margin="0,20,0,0"
-				Content="Export header"
+				Content="Export"
 				Click="OnSaveButtonClick"
 			/>
 		</StackPanel>

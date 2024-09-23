@@ -60,9 +60,7 @@ public partial class FontPage : UserControl {
 		addTextBoxRenderCallback(GlyphsFromTextBox);
 		addTextBoxRenderCallback(GlyphsToTextBox);
 
-		// Cringe
 		if (!DesignerProperties.GetIsInDesignMode(this)) {
-			// Rendering glyphs once on startup
 			UpdateVisualsFromSettings();
 			Render();
 		}
