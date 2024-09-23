@@ -6,6 +6,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
 	xmlns:s="clr-namespace:System;assembly=mscorlib"
+	xmlns:colorpicker="clr-namespace:ColorPicker;assembly=ColorPicker"
 	
 	mc:Ignorable="d"
 	
@@ -48,6 +49,15 @@
 					<ColumnDefinition Width="Auto"/>
 				</Grid.ColumnDefinitions>
 
+				<TextBox
+					Style="{StaticResource TextBox}"
+					x:Name="PaletteTextBox"
+					Text="0xFFFFFF"
+					Visibility="Collapsed"
+					TextChanged="PaletteTextBox_TextChanged"
+					KeyDown="PaletteTextBox_KeyDown"
+				/>
+
 				<ComboBox
 					Style="{StaticResource ComboBox}"
 					x:Name="PaletteComboBox"
@@ -77,30 +87,33 @@
 				</ComboBox>
 
 				<Button
-					x:Name="RemovePaletteButton"
+					x:Name="PaletteRemoveButton"
 					Grid.Column="1"
 					Style="{StaticResource SecondaryButton}"
 					Width="40"
 					Margin="10,0,0,0"
 					Content="-"
+					Click="PaletteRemoveButton_Click"
 				/>
 
 				<Button
-					x:Name="EditPaletteButton"
+					x:Name="PaletteAddButton"
 					Grid.Column="2"
 					Style="{StaticResource SecondaryButton}"
 					Width="40"
 					Margin="10,0,0,0"
-					Content="E"
+					Content="+"
+					Click="PaletteAddButton_Click"
 				/>
 
 				<Button
-					x:Name="AddPaletteButton"
+					x:Name="PaletteEditButton"
 					Grid.Column="3"
 					Style="{StaticResource SecondaryButton}"
 					Width="40"
 					Margin="10,0,0,0"
-					Content="+"
+					Content="✎"
+					Click="PaletteEditButton_Click"
 				/>
 			</Grid>
 

@@ -31,16 +31,71 @@ public partial class ImagePage : UserControl {
 		}
 	}
 
+	ObservableCollection<uint> PaletteComboBoxItems;
+
+	bool PaletteEditMode {
+		get => PaletteTextBox.Visibility == Visibility.Visible;
+		set {
+			PaletteTextBox.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
+
+			PaletteComboBox.Visibility =
+			PaletteAddButton.Visibility =
+			PaletteRemoveButton.Visibility = value ? Visibility.Collapsed : Visibility.Visible;
+
+			PaletteEditButton.Content = value ? "💾" : "✎";
+		}
+	}
+
 	void UpdateVisualsFromSettings() {
 		// Mode
 		ModeComboBox.SelectedIndex = (byte) App.Settings.Image.Mode;
 
 		// Palette
-		PaletteComboBox.ItemsSource = App.Settings.Image.Palette;
-		PaletteComboBox.SelectedIndex = App.Settings.Image.Palette.Length > 0 ? 0 : -1;
+		PaletteComboBoxItems = new(App.Settings.Image.Palette);
+		PaletteComboBox.ItemsSource = PaletteComboBoxItems;
+		PaletteComboBox.SelectedIndex = PaletteComboBoxItems.Count > 0 ? 0 : -1;
 	}
 
-	async void OnSaveButtonClick(object sender, RoutedEventArgs e) {
+	private void PaletteRemoveButton_Click(object sender, RoutedEventArgs e) {
+		if (PaletteComboBoxItems.Count <= 1)
+			return;
+
+		var index = PaletteComboBox.SelectedIndex;
+		PaletteComboBoxItems.RemoveAt(index);
+		PaletteComboBox.SelectedIndex = Math.Clamp(index, 0, PaletteComboBoxItems.Count - 1);
+	}
+
+	private void PaletteEditButton_Click(object sender, RoutedEventArgs e) {
+		PaletteEditMode = !PaletteEditMode;
+
+		if (PaletteEditMode) {
+			PaletteTextBox.Focus();
+		}
+	}
+
+	private void PaletteAddButton_Click(object sender, RoutedEventArgs e) {
+		PaletteComboBoxItems.Add(0xFFFFFF);
+		PaletteComboBox.SelectedIndex = PaletteComboBoxItems.Count - 1;
+		PaletteEditMode = true;
+	}
+
+	private void PaletteTextBox_TextChanged(object sender, TextChangedEventArgs e) {
+		if (!uint.TryParse(PaletteTextBox.Text, out var value))
+			return;
+
+		PaletteComboBoxItems[PaletteComboBox.SelectedIndex] = value;
+		PaletteComboBox.Items.Refresh();
+	}
+
+
+	private void PaletteTextBox_KeyDown(object sender, KeyEventArgs e) {
+		if (e.Key is not Key.Enter)
+			return;
+
+		PaletteEditMode = false;
+	}
+
+	void OnSaveButtonClick(object sender, RoutedEventArgs e) {
 
 	}
 }
