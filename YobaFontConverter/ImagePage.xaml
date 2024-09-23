@@ -1,0 +1,99 @@
+﻿<UserControl
+	x:Class="YobaFontConverter.ImagePage"
+	xmlns:local="clr-namespace:YobaFontConverter"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+	xmlns:s="clr-namespace:System;assembly=mscorlib"
+	
+	mc:Ignorable="d"
+	
+	d:DataContext="{d:DesignInstance local:ImagePage, IsDesignTimeCreatable=True}"
+	d:DesignWidth="500"
+	d:DesignHeight="450"
+>
+    <Grid>
+		<StackPanel
+			Grid.Column="1"
+			MaxWidth="600"
+			Margin="50,-10,50,0"
+			VerticalAlignment="Center"
+		>
+			<TextBlock
+				Style="{StaticResource TitleTextBlock}"
+				Text="Mode"
+			/>
+
+			<ComboBox
+				Style="{StaticResource ComboBox}"
+				x:Name="ModeComboBox"
+				SelectedIndex="0"
+			>
+				<ComboBox.Items>
+					<s:String>Default, 16 bit</s:String>
+					<s:String>Palette, 8 bit</s:String>
+				</ComboBox.Items>
+			</ComboBox>
+
+			<TextBlock
+				Style="{StaticResource TitleTextBlock}"
+				Text="Palette"
+			/>
+
+			<ComboBox
+				Style="{StaticResource ComboBox}"
+				x:Name="PaletteComboBox"
+			>
+				<ComboBox.ItemTemplate>
+					<DataTemplate
+						DataType="s:UInt32"
+					>
+						<StackPanel
+							Orientation="Horizontal"	
+						>
+							<Ellipse
+								Width="20"
+								Height="20"
+								VerticalAlignment="Center"
+								Fill="{Binding Path='', Converter={local:UintToSolidColorBrushConverter}}"
+							/>
+
+							<TextBlock
+								Margin="8,0,0,0"
+								VerticalAlignment="Center"
+								Text="{Binding Path='', Converter={local:UintToHexStringConverter}}"
+							/>
+						</StackPanel>
+					</DataTemplate>
+				</ComboBox.ItemTemplate>
+			</ComboBox>
+
+			<TextBlock
+				Style="{StaticResource TitleTextBlock}"
+				Text="Font size"
+			/>
+
+			<TextBox
+				Grid.Column="1"
+				Style="{StaticResource TextBox}"
+				x:Name="FontSizeTextBox"
+				Text="16"
+			/>
+
+			<Image
+				Height="200"
+				Stretch="Uniform"
+			>
+				
+			</Image>
+
+			<Button
+				Style="{StaticResource Button}"
+				Margin="0,20,0,0"
+				Content="Export header"
+				Click="OnSaveButtonClick"
+			/>
+		</StackPanel>
+	</Grid>
+</UserControl>

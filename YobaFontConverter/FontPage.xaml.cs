@@ -45,7 +45,7 @@ public partial class FontPage : UserControl {
 			if (FontFamilyComboBox.SelectedItem is not FontFamily fontFamily)
 				return;
 
-			App.Settings.FontFamily = fontFamily.Source;
+			App.Settings.Font.Family = fontFamily.Source;
 			EnqueueRender();
 		};
 
@@ -82,9 +82,9 @@ public partial class FontPage : UserControl {
 	public ObservableCollection<FontFamily> FontFamilies { get; set; } = [];
 
 	void UpdateVisualsFromSettings() {
-		GlyphsFromTextBox.Text = App.Settings.GlyphsFrom.ToString();
-		GlyphsToTextBox.Text = App.Settings.GlyphsTo.ToString();
-		FontSizeTextBox.Text = App.Settings.FontSize.ToString();
+		GlyphsFromTextBox.Text = App.Settings.Font.GlyphsFrom.ToString();
+		GlyphsToTextBox.Text = App.Settings.Font.GlyphsTo.ToString();
+		FontSizeTextBox.Text = App.Settings.Font.Size.ToString();
 
 		// Font families
 		int settingsFontFamilyCounter = 0;
@@ -93,7 +93,7 @@ public partial class FontPage : UserControl {
 		foreach (var fontFamily in Fonts.SystemFontFamilies.OrderBy(o => o.Source)) {
 			FontFamilies.Add(fontFamily);
 
-			if (fontFamily.Source == App.Settings.FontFamily)
+			if (fontFamily.Source == App.Settings.Font.Family)
 				settingsFontFamilyIndex = settingsFontFamilyCounter;
 
 			settingsFontFamilyCounter++;
@@ -104,16 +104,16 @@ public partial class FontPage : UserControl {
 	}
 
 	void Render() {
-		if (!int.TryParse(FontSizeTextBox.Text, out App.Settings.FontSize))
-			App.Settings.FontSize = 16;
+		if (!int.TryParse(FontSizeTextBox.Text, out App.Settings.Font.Size))
+			App.Settings.Font.Size = 16;
 
-		if (!int.TryParse(GlyphsFromTextBox.Text, out App.Settings.GlyphsFrom))
-			App.Settings.GlyphsFrom = 32;
+		if (!int.TryParse(GlyphsFromTextBox.Text, out App.Settings.Font.GlyphsFrom))
+			App.Settings.Font.GlyphsFrom = 32;
 
-		if (!int.TryParse(GlyphsToTextBox.Text, out App.Settings.GlyphsTo))
-			App.Settings.GlyphsTo = 126;
+		if (!int.TryParse(GlyphsToTextBox.Text, out App.Settings.Font.GlyphsTo))
+			App.Settings.Font.GlyphsTo = 126;
 
-		GlyphsTotal = App.Settings.GlyphsTo - App.Settings.GlyphsFrom + 1;
+		GlyphsTotal = App.Settings.Font.GlyphsTo - App.Settings.Font.GlyphsFrom + 1;
 
 		if (GlyphsTotal <= 0) {
 			return;
@@ -141,11 +141,11 @@ public partial class FontPage : UserControl {
 		using (var drawingContext = drawingVisual.RenderOpen()) {
 			for (int i = 0; i < GlyphsTotal; i++) {
 				GlyphsFormattedTexts[i] = formattedText = new(
-					((char) (App.Settings.GlyphsFrom + i)).ToString(),
+					((char) (App.Settings.Font.GlyphsFrom + i)).ToString(),
 					CultureInfo.CurrentUICulture,
 					FlowDirection.LeftToRight,
 					GlyphsTypeface,
-					App.Settings.FontSize,
+					App.Settings.Font.Size,
 					(SolidColorBrush) Application.Current.FindResource("ThemeFg1"),
 					new NumberSubstitution(),
 					TextFormattingMode.Display,
@@ -195,7 +195,7 @@ public partial class FontPage : UserControl {
 		if (GlyphsBitmap is null)
 			return;
 
-		var className = $"{FontNameRegex().Replace(GlyphsTypeface!.FontFamily.ToString(), "")}{App.Settings.FontSize}Font";
+		var className = $"{FontNameRegex().Replace(GlyphsTypeface!.FontFamily.ToString(), "")}{App.Settings.Font.Size}Font";
 
 		SaveFileDialog dialog = new() {
 			FileName = $"{className}.h",
@@ -295,8 +295,8 @@ public partial class FontPage : UserControl {
 class {{className}} : public Font {
 	public:
 		{{className}}() : Font(
-			{{App.Settings.GlyphsFrom}},
-			{{App.Settings.GlyphsTo}},
+			{{App.Settings.Font.GlyphsFrom}},
+			{{App.Settings.Font.GlyphsTo}},
 			{{GlyphsHeightTotal}},
 			_glyphs,
 			_bitmap

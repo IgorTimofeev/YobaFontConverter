@@ -75,7 +75,7 @@
 				Style="{StaticResource TabItem}"
 			>
 				<TabItem.Header>
-					<TextBlock Text="Fonts"/>
+					Fonts
 				</TabItem.Header>
 
 				<TabItem.Content>
@@ -87,8 +87,12 @@
 				Style="{StaticResource TabItem}"
 			>
 				<TabItem.Header>
-					<TextBlock Text="Images"/>
+					Images
 				</TabItem.Header>
+
+				<TabItem.Content>
+					<local:ImagePage/>
+				</TabItem.Content>
 			</TabItem>
 		</TabControl>
 	</Grid>
