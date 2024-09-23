@@ -51,7 +51,7 @@
 					VerticalAlignment="Center"
 					Foreground="{StaticResource ThemeFg4}"
 					FontSize="12"
-					Text="YOBA | Font converter"
+					Text="YOBA | Resource converter"
 				/>
 
 				<Button
@@ -64,101 +64,32 @@
 				/>
 			</Grid>
 		</Border>
-
-		<StackPanel
+		
+		<TabControl
+			Style="{StaticResource TabControl}"
 			Grid.Row="1"
-			MaxWidth="600"
-			Margin="50,-10,50,0"
-			VerticalAlignment="Center"
+			
+			TabStripPlacement="Left"
 		>
-			<TextBlock
-				Style="{StaticResource TitleTextBlock}"
-				Text="Font family"
-			/>
-
-			<ComboBox
-				Style="{StaticResource ComboBox}"
-				x:Name="FontFamilyComboBox"
-				SelectedIndex="0"
+			<TabItem
+				Style="{StaticResource TabItem}"
 			>
-				<ComboBox.ItemTemplate>
-					<DataTemplate DataType="FontFamily">
-						<TextBlock
-							FontFamily="{Binding}"
-							Text="{Binding}"
-						/>
-					</DataTemplate>
-				</ComboBox.ItemTemplate>
-			</ComboBox>
+				<TabItem.Header>
+					<TextBlock Text="Fonts"/>
+				</TabItem.Header>
 
-			<TextBlock
-				Style="{StaticResource TitleTextBlock}"
-				Text="Font size"
-			/>
+				<TabItem.Content>
+					<local:FontPage/>
+				</TabItem.Content>
+			</TabItem>
 
-			<TextBox
-				Grid.Column="1"
-				Style="{StaticResource TextBox}"
-				x:Name="FontSizeTextBox"
-				Text="16"
-			/>
-
-			<TextBlock
-				Style="{StaticResource TitleTextBlock}"
-				Text="Codepoints from / to"
-			/>
-
-			<Grid>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition/>
-					<ColumnDefinition/>
-				</Grid.ColumnDefinitions>
-
-				<TextBox
-					x:Name="GlyphsFromTextBox"
-					Style="{StaticResource TextBox}"
-					Text="32"
-				/>
-
-				<TextBox
-					Grid.Column="3"
-					x:Name="GlyphsToTextBox"
-					Style="{StaticResource TextBox}"
-					Margin="10,0,0,0"
-					Text="126"
-				/>
-			</Grid>
-
-			<TextBlock
-				Style="{StaticResource TitleTextBlock}"
-				Text="Preview"
-			/>
-
-			<Border
-				SnapsToDevicePixels="True"
-				Background="{StaticResource ThemeBg2}"
-				BorderBrush="{StaticResource ThemeBg4}"
-				BorderThickness="1"
-				CornerRadius="5"
-				Padding="5,0,5,0"
-				Height="40"
+			<TabItem
+				Style="{StaticResource TabItem}"
 			>
-				<Image
-					x:Name="PreviewImage"
-					Stretch="None"
-					RenderOptions.EdgeMode="Aliased"
-					RenderOptions.BitmapScalingMode="NearestNeighbor"
-					HorizontalAlignment="Left"
-					VerticalAlignment="Center"
-				/>
-			</Border>
-
-			<Button
-				Style="{StaticResource Button}"
-				Margin="0,20,0,0"
-				Content="Export header"
-				Click="OnSaveButtonClick"
-			/>
-		</StackPanel>
+				<TabItem.Header>
+					<TextBlock Text="Images"/>
+				</TabItem.Header>
+			</TabItem>
+		</TabControl>
 	</Grid>
 </Window>

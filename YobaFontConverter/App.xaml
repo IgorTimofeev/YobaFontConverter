@@ -365,5 +365,74 @@
 				</Trigger>
 			</Style.Triggers>
 		</Style>
+
+		<Style x:Key="TabControl" TargetType="TabControl">
+			<Setter Property="Padding" Value="5"/>
+		
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="TabControl">
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto"/>
+								<ColumnDefinition/>
+							</Grid.ColumnDefinitions>
+
+							<Border
+								x:Name="HeaderBorder"
+								Background="{StaticResource ThemeBg2}"
+								Padding="{TemplateBinding Padding}"
+							>
+								<TabPanel
+									IsItemsHost="True"
+									Name="HeaderPanel" 
+								/>
+							</Border>
+
+							<ContentPresenter
+								Grid.Column="1"
+								Name="PART_SelectedContentHost"
+								SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+								Content="{TemplateBinding SelectedContent}" 
+								ContentTemplate="{TemplateBinding SelectedContentTemplate}" 
+								ContentStringFormat="{TemplateBinding SelectedContentStringFormat}" 
+								ContentSource="SelectedContent" 
+							/>
+						</Grid>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+
+		<Style x:Key="TabItem" TargetType="TabItem">
+			<Setter Property="Padding" Value="10,8,10,8"/>
+			<Setter Property="Background" Value="Transparent"/>
+			<Setter Property="Foreground" Value="{StaticResource ThemeFg3}"/>
+			<Setter Property="Cursor" Value="Hand"/>
+
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="TabItem">
+						<Border>
+							<Border
+								x:Name="PART_Border"
+								Background="{TemplateBinding Background}"
+								Padding="{TemplateBinding Padding}"
+								CornerRadius="5"
+							>
+								<ContentPresenter ContentSource="Header"/>
+							</Border>
+						</Border>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+
+			<Style.Triggers>
+				<Trigger Property="IsSelected" Value="True">
+					<Setter Property="Background" Value="{StaticResource ThemeAccent1}"/>
+					<Setter Property="Foreground" Value="{StaticResource ThemeBg1}"/>
+				</Trigger>
+			</Style.Triggers>
+		</Style>
 	</Application.Resources>
 </Application>
