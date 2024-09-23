@@ -22,49 +22,6 @@ using System.Windows.Threading;
 
 namespace YobaFontConverter;
 
-public class UintToSolidColorBrushConverter : MarkupExtension, IValueConverter {
-	public static UintToSolidColorBrushConverter Instance = new();
-
-	public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-		var uintColor = (uint) value;
-
-		SolidColorBrush brush = new(Color.FromArgb(
-			255,
-			(byte) (uintColor >> 16 & 0xFF),
-			(byte) (uintColor >> 8 & 0xFF),
-			(byte) (uintColor & 0xFF)
-		));
-
-		brush.Freeze();
-
-		return brush;
-	}
-
-	public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
-		throw new NotImplementedException();
-	}
-
-	public override object ProvideValue(IServiceProvider serviceProvider) {
-		return Instance;
-	}
-}
-
-public class UintToHexStringConverter : MarkupExtension, IValueConverter {
-	public static UintToHexStringConverter Instance = new();
-
-	public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-		return $"0x{(uint) value:X6}";
-	}
-
-	public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
-		throw new NotImplementedException();
-	}
-
-	public override object ProvideValue(IServiceProvider serviceProvider) {
-		return Instance;
-	}
-}
-
 public partial class ImagePage : UserControl {
 	public ImagePage() {
 		InitializeComponent();
@@ -75,6 +32,9 @@ public partial class ImagePage : UserControl {
 	}
 
 	void UpdateVisualsFromSettings() {
+		// Mode
+		ModeComboBox.SelectedIndex = (byte) App.Settings.Image.Mode;
+
 		// Palette
 		PaletteComboBox.ItemsSource = App.Settings.Image.Palette;
 		PaletteComboBox.SelectedIndex = App.Settings.Image.Palette.Length > 0 ? 0 : -1;

@@ -28,6 +28,8 @@ public class ImageSettingsJSON {
 		0x000000,
 		0xFFFFFF
 	];
+
+	public string Path = string.Empty;
 }
 
 public class SettingsJSON {

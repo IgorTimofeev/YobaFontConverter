@@ -366,6 +366,27 @@
 			</Style.Triggers>
 		</Style>
 
+		<Style x:Key="SecondaryButton" TargetType="Button" BasedOn="{StaticResource Button}">
+			<Setter Property="Background" Value="{StaticResource ThemeBg3}"/>
+			<Setter Property="Foreground" Value="{StaticResource ThemeFg3}"/>
+
+			<Style.Triggers>
+				<Trigger Property="IsMouseOver" Value="True">
+					<Trigger.Setters>
+						<Setter Property="Background" Value="{StaticResource ThemeBg4}"/>
+						<Setter Property="Foreground" Value="{StaticResource ThemeFg1}"/>
+					</Trigger.Setters>
+				</Trigger>
+
+				<Trigger Property="IsPressed" Value="True">
+					<Trigger.Setters>
+						<Setter Property="Background" Value="{StaticResource ThemeBg4}"/>
+						<Setter Property="Foreground" Value="{StaticResource ThemeFg1}"/>
+					</Trigger.Setters>
+				</Trigger>
+			</Style.Triggers>
+		</Style>
+		
 		<Style x:Key="TabControl" TargetType="TabControl">
 			<Setter Property="Padding" Value="5"/>
 		
