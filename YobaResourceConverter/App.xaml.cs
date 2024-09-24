@@ -5,7 +5,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows;
 
-namespace YobaFontConverter;
+namespace YobaResourceConverter;
 
 public partial class App : Application {
 	public App() {

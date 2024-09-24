@@ -23,7 +23,7 @@ using ColorEx;
 using ColorEx.Wpf;
 using Newtonsoft.Json.Linq;
 
-namespace YobaFontConverter;
+namespace YobaResourceConverter;
 
 public partial class ImagePage : UserControl {
 	public ImagePage() {

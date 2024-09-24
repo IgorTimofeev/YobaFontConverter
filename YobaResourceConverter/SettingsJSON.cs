@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace YobaFontConverter;
+namespace YobaResourceConverter;
 
 public class FontSettingsJSON {
 	public string Family = "Arial";

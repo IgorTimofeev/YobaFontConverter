@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace YobaFontConverter;
+namespace YobaResourceConverter;
 
 static class Constants {
 	public static readonly string AppDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "YobaResourceConverter");

@@ -1,11 +1,11 @@
 ﻿<Window
-	x:Class="YobaFontConverter.MainWindow"
+	x:Class="YobaResourceConverter.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:s="clr-namespace:System;assembly=mscorlib"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:local="clr-namespace:YobaFontConverter"
+    xmlns:local="clr-namespace:YobaResourceConverter"
     mc:Ignorable="d"
 		
     Title="YOBA | FontConverter"
@@ -36,7 +36,7 @@
 
 		<Border
 			x:Name="WindowTopPanel"
-			Background="{StaticResource ThemeBg2}"	
+			Background="{StaticResource ThemeBg3}"	
 			MouseDown="OnWindowTopPanelMouseDown"
 		>
 			<Grid>

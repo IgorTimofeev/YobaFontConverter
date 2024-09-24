@@ -3,7 +3,7 @@ using System.Windows.Data;
 using System.Windows.Markup;
 using System.Windows.Media;
 
-namespace YobaFontConverter;
+namespace YobaResourceConverter;
 
 public class UintToSolidColorBrushConverter : MarkupExtension, IValueConverter {
 	public static UintToSolidColorBrushConverter Instance = new();

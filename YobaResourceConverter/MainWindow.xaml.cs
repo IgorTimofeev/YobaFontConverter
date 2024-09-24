@@ -17,7 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Threading;
 
-namespace YobaFontConverter;
+namespace YobaResourceConverter;
 
 public partial class MainWindow : Window {
 	public MainWindow() {
