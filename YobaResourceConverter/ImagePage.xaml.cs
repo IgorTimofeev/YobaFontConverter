@@ -36,8 +36,6 @@ public partial class ImagePage : UserControl {
 				RenderTimer!.Stop();
 
 				Render();
-
-				await App.SaveSettingsAsync();
 			},
 			Dispatcher
 		);

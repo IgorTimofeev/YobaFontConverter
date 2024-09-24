@@ -53,14 +53,18 @@
 					Text="YOBA | Resource converter"
 				/>
 
-				<Button
+				<StackPanel
 					Grid.Column="1"
-					x:Name="WindowCloseButton"
-					Style="{StaticResource WindowCloseButton}"
-					Width="30px"
-					Content="X"
-					Click="OnWindowCloseButtonClick"
-				/>
+					Orientation="Horizontal"	
+					HorizontalAlignment="Right"
+				>
+					<Button
+						x:Name="WindowCloseButton"
+						Style="{StaticResource WindowCloseButton}"
+						Content="X"
+						Click="OnWindowCloseButtonClick"
+					/>
+				</StackPanel>
 			</Grid>
 		</Border>
 		

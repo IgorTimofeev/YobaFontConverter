@@ -4,20 +4,13 @@ using System.Data;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace YobaResourceConverter;
 
 public partial class App : Application {
 	public App() {
-		LoadSettings();
-	}
-
-	public static SettingsJSON Settings;
-
-	[GeneratedRegex(@"\W+")]
-	public static partial Regex GetHeaderNameRegex();
-
-	public static void LoadSettings() {
+		// Loading settings
 		if (File.Exists(Constants.SettingsPath)) {
 			try {
 				Settings = JsonConvert.DeserializeObject<SettingsJSON>(File.ReadAllText(Constants.SettingsPath)) ?? new();
@@ -32,10 +25,18 @@ public partial class App : Application {
 		}
 	}
 
-	public static async Task SaveSettingsAsync() {
+	public static SettingsJSON Settings;
+
+	protected override void OnExit(ExitEventArgs e) {
+		// Saving settings
 		Directory.CreateDirectory(Constants.AppDataPath);
 
-		await File.WriteAllTextAsync(Constants.SettingsPath, JsonConvert.SerializeObject(Settings!, Formatting.Indented));
+		File.WriteAllText(Constants.SettingsPath, JsonConvert.SerializeObject(Settings!, Formatting.Indented));
+
+		base.OnExit(e);
 	}
+
+	[GeneratedRegex(@"\W+")]
+	public static partial Regex GetHeaderNameRegex();
 }
 

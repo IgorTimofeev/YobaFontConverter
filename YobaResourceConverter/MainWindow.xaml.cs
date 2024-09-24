@@ -39,14 +39,14 @@ public partial class MainWindow : Window {
 		TabControl.SelectedIndex = App.Settings.TabIndex;
 	}
 
-	protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo) {
-		base.OnRenderSizeChanged(sizeInfo);
+	protected override void OnClosing(CancelEventArgs e) {
+		base.OnClosing(e);
 
 		App.Settings.Window.X = (int) Left;
 		App.Settings.Window.Y = (int) Top;
 
-		App.Settings.Window.Width = (int) sizeInfo.NewSize.Width;
-		App.Settings.Window.Height = (int) sizeInfo.NewSize.Height;
+		App.Settings.Window.Width = (int) RenderSize.Width;
+		App.Settings.Window.Height = (int) RenderSize.Height;
 	}
 
 	void OnWindowTopPanelMouseDown(object sender, MouseButtonEventArgs e) {

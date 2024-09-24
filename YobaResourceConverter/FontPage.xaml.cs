@@ -29,12 +29,10 @@ public partial class FontPage : UserControl {
 		RenderTimer = new(
 			TimeSpan.FromMilliseconds(500),
 			DispatcherPriority.ApplicationIdle,
-			async (s, e) => {
+			(s, e) => {
 				RenderTimer!.Stop();
 
 				Render();
-
-				await App.SaveSettingsAsync();
 			},
 			Dispatcher
 		);
@@ -46,19 +44,27 @@ public partial class FontPage : UserControl {
 				return;
 
 			App.Settings.Font.Family = fontFamily.Source;
+
 			EnqueueRender();
 		};
 
-		void addTextBoxRenderCallback(TextBox textBox) {
+		void addTextBoxRenderCallback(TextBox textBox, Action<int> valueSetter) {
 			textBox.TextChanged += (s, e) => {
-				if (textBox.Text.Length > 0)
-					EnqueueRender();
+				if (
+					textBox.Text.Length == 0
+					|| int.TryParse(textBox.Text, out var value)
+				)
+					return;
+
+				valueSetter(value);
+
+				EnqueueRender();
 			};
 		}
 
-		addTextBoxRenderCallback(FontSizeTextBox);
-		addTextBoxRenderCallback(GlyphsFromTextBox);
-		addTextBoxRenderCallback(GlyphsToTextBox);
+		addTextBoxRenderCallback(FontSizeTextBox, o => App.Settings.Font.Size = o);
+		addTextBoxRenderCallback(GlyphsFromTextBox, o => App.Settings.Font.From = o);
+		addTextBoxRenderCallback(GlyphsToTextBox, o => App.Settings.Font.To = o);
 
 		if (!DesignerProperties.GetIsInDesignMode(this)) {
 			UpdateVisualsFromSettings();

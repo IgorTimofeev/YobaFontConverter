@@ -110,7 +110,7 @@
 		<Button
 			Grid.Row="1"
 			Style="{StaticResource Button}"
-			Margin="50,20,50,20"
+			Margin="{StaticResource LowerPartMargin}"
 			Content="Export .h"
 			Click="OnSaveButtonClick"
 		/>

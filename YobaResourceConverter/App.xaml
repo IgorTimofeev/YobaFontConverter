@@ -28,6 +28,7 @@
 		<SolidColorBrush x:Key="ThemeCaret" Color="#5ec1ff"/>
 
 		<Thickness x:Key="ContentMargin">50,0,50,0</Thickness>
+		<Thickness x:Key="LowerPartMargin">50,20,50,20</Thickness>
 
 		<Style x:Key="ScrollBarThumb" TargetType="Thumb">
 			<Setter Property="IsTabStop" Value="false"/>
@@ -127,7 +128,7 @@
 								HorizontalAlignment="Right"
 								SnapsToDevicePixels="True"
 								Grid.Column="0"
-								Padding="7,0,0,0"
+								Padding="7,0,5,0"
 								Style="{StaticResource ScrollBar}"
 								Value="{TemplateBinding VerticalOffset}"
 								Maximum="{TemplateBinding ScrollableHeight}"
@@ -141,7 +142,7 @@
 								VerticalAlignment="Bottom"
 								SnapsToDevicePixels="True"
 								Grid.Row="0"
-								Padding="0,7,0,0"
+								Padding="0,7,0,5"
 								Style="{StaticResource ScrollBar}"
 								Value="{TemplateBinding HorizontalOffset}"
 								Maximum="{TemplateBinding ScrollableWidth}"
@@ -471,7 +472,7 @@
 
 		<Style x:Key="WindowActionButton" TargetType="Button" BasedOn="{StaticResource Button}">
 			<Setter Property="Height" Value="Auto"/>
-			<Setter Property="Padding" Value="5,0,5,0"/>
+			<Setter Property="Padding" Value="10,0,10,0"/>
 			<Setter Property="Background" Value="{StaticResource ThemeBg3}"/>
 			<Setter Property="Foreground" Value="{StaticResource ThemeFg4}"/>
 			<Setter Property="FontSize" Value="11"/>
@@ -481,6 +482,7 @@
 					<ControlTemplate TargetType="Button">
 						<Border
 							SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+							Padding="{TemplateBinding Padding}"
 							Background="{TemplateBinding Background}"
 						>
 							<ContentPresenter
