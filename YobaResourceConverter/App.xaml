@@ -1,6 +1,7 @@
 ﻿<Application x:Class="YobaResourceConverter.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:s="clr-namespace:System;assembly=mscorlib"
              xmlns:local="clr-namespace:YobaResourceConverter"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
@@ -25,6 +26,8 @@
 		<SolidColorBrush x:Key="ThemeBad3" Color="#FF630F13"/>
 
 		<SolidColorBrush x:Key="ThemeCaret" Color="#5ec1ff"/>
+
+		<Thickness x:Key="ContentMargin">50,0,50,0</Thickness>
 
 		<Style x:Key="ScrollBarThumb" TargetType="Thumb">
 			<Setter Property="IsTabStop" Value="false"/>
@@ -439,6 +442,7 @@
 						<Border
 							SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
 							Background="{TemplateBinding Background}"
+							Padding="{TemplateBinding Padding}"
 							CornerRadius="5"
 						>
 							<ContentPresenter
@@ -543,30 +547,32 @@
 		</Style>
 		
 		<Style x:Key="TabControl" TargetType="TabControl">
-			<Setter Property="Padding" Value="5"/>
-		
+			<Setter Property="Padding" Value="0,8,0,8"/>
+			<Setter Property="TabStripPlacement" Value="Top"/>
+
 			<Setter Property="Template">
 				<Setter.Value>
 					<ControlTemplate TargetType="TabControl">
 						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto"/>
-								<ColumnDefinition/>
-							</Grid.ColumnDefinitions>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition/>
+							</Grid.RowDefinitions>
 
 							<Border
 								x:Name="HeaderBorder"
-								Background="{StaticResource ThemeBg2}"
 								Padding="{TemplateBinding Padding}"
 							>
-								<TabPanel
+								<StackPanel
+									Orientation="Horizontal"
+									HorizontalAlignment="Center"
 									IsItemsHost="True"
 									Name="HeaderPanel" 
 								/>
 							</Border>
 
 							<ContentPresenter
-								Grid.Column="1"
+								Grid.Row="1"
 								Name="PART_SelectedContentHost"
 								SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
 								Content="{TemplateBinding SelectedContent}" 
@@ -581,28 +587,32 @@
 		</Style>
 
 		<Style x:Key="TabItem" TargetType="TabItem">
-			<Setter Property="Padding" Value="10,8,10,8"/>
+			<Setter Property="Padding" Value="12,10,12,10"/>
+			<Setter Property="Margin" Value="2,0,2,0"/>
 			<Setter Property="Background" Value="Transparent"/>
 			<Setter Property="Foreground" Value="{StaticResource ThemeFg3}"/>
 
 			<Setter Property="Template">
 				<Setter.Value>
 					<ControlTemplate TargetType="TabItem">
-						<Border>
-							<Border
-								x:Name="PART_Border"
-								Background="{TemplateBinding Background}"
-								Padding="{TemplateBinding Padding}"
-								CornerRadius="5"
-							>
-								<ContentPresenter Cursor="Hand" ContentSource="Header"/>
-							</Border>
+						<Border
+							x:Name="PART_Border"
+							Cursor="Hand"
+							Background="{TemplateBinding Background}"
+							Padding="{TemplateBinding Padding}"
+							CornerRadius="5"
+						>
+							<ContentPresenter ContentSource="Header"/>
 						</Border>
 					</ControlTemplate>
 				</Setter.Value>
 			</Setter>
 
 			<Style.Triggers>
+				<Trigger Property="IsMouseOver" Value="True">
+					<Setter Property="Background" Value="{StaticResource ThemeBg3}"/>
+				</Trigger>
+
 				<Trigger Property="IsSelected" Value="True">
 					<Setter Property="Background" Value="{StaticResource ThemeAccent1}"/>
 					<Setter Property="Foreground" Value="{StaticResource ThemeBg1}"/>

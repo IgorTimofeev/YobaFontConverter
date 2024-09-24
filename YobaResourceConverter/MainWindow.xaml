@@ -10,8 +10,8 @@
 		
     Title="YOBA | FontConverter"
 
-	MinWidth="340"
-	MinHeight="420"
+	MinWidth="250"
+	MinHeight="250"
 	Width="470"
 	Height="458"
 
@@ -69,7 +69,6 @@
 			Style="{StaticResource TabControl}"
 			Grid.Row="1"
 			
-			TabStripPlacement="Left"
 			SelectionChanged="OnTabControlSelectionChanged"
 		>
 			<TabItem

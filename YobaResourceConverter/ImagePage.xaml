@@ -15,109 +15,115 @@
 	d:DesignHeight="450"
 >
     <Grid>
-		<StackPanel
-			Grid.Column="1"
-			MaxWidth="600"
-			Margin="50,-10,50,0"
-			VerticalAlignment="Center"
+		<Grid.RowDefinitions>
+			<RowDefinition/>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
+
+		<ScrollViewer
+			Style="{StaticResource ScrollViewer}"	
+			Padding="{StaticResource ContentMargin}"
 		>
-			<TextBlock
-				Style="{StaticResource TitleTextBlock}"
-				Text="Mode"
-			/>
+			<StackPanel>
+				<TextBlock
+					Style="{StaticResource TitleTextBlock}"
+					Text="Mode"
+				/>
 
-			<ComboBox
-				Style="{StaticResource ComboBox}"
-				x:Name="ModeComboBox"
-				SelectedIndex="0"
-			>
-				<ComboBox.Items>
-					<s:String>8 bit palette</s:String>
-				</ComboBox.Items>
-			</ComboBox>
+				<ComboBox
+					Style="{StaticResource ComboBox}"
+					x:Name="ModeComboBox"
+					SelectedIndex="0"
+				>
+					<ComboBox.Items>
+						<s:String>8 bit palette</s:String>
+					</ComboBox.Items>
+				</ComboBox>
 
-			<TextBlock
-				Style="{StaticResource TitleTextBlock}"
-				Text="Comma-separated colors in 0xRRGGBB format. To ignore specific color, mark it as negative"
-			/>
+				<TextBlock
+					Style="{StaticResource TitleTextBlock}"
+					Text="Comma-separated colors in 0xRRGGBB format. To ignore specific color, mark it as negative"
+				/>
 			
-			<TextBox
-				Grid.Column="1"
-				Style="{StaticResource TextBox}"
-				x:Name="PaletteTextBox"
-				Text="0x000000, -0xFF00FF, 0xFFFFFF"
-			/>
-
-			<TextBlock
-				Style="{StaticResource TitleTextBlock}"
-				Text="Image path"
-			/>
-
-			<Grid>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition/>
-					<ColumnDefinition Width="Auto"/>
-				</Grid.ColumnDefinitions>
-
 				<TextBox
-					Style="{StaticResource TextBox}"
-					x:Name="PathTextBox"
-					IsReadOnly="True"
-				/>
-
-				<Button
 					Grid.Column="1"
-					Style="{StaticResource SecondaryButton}"
-					Margin="10,0,0,0"
-					Width="40"
-					Content="📁"
-					Click="OnPathButtonClick"
+					Style="{StaticResource TextBox}"
+					x:Name="PaletteTextBox"
+					Text="0x000000, -0xFF00FF, 0xFFFFFF"
 				/>
-			</Grid>
 
-			<TextBlock
-				Style="{StaticResource TitleTextBlock}"
-				Text="Preview"
-			/>
+				<TextBlock
+					Style="{StaticResource TitleTextBlock}"
+					Text="Image path"
+				/>
 
-			<Border
-				SnapsToDevicePixels="True"
-				Height="100"
-				Padding="5"
-				CornerRadius="5"
-				Background="{StaticResource ThemeBg3}"
-				BorderThickness="1"
-				BorderBrush="{StaticResource ThemeBg4}"
-			>
 				<Grid>
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition/>
-						<ColumnDefinition/>
+						<ColumnDefinition Width="Auto"/>
 					</Grid.ColumnDefinitions>
-					
-					<Image
-						x:Name="PreviewImageOriginal"
-						Margin="0,0,2.5,0"
-						Stretch="Uniform"
-						RenderOptions.BitmapScalingMode="NearestNeighbor"
+
+					<TextBox
+						Style="{StaticResource TextBox}"
+						x:Name="PathTextBox"
+						IsReadOnly="True"
 					/>
 
-					<Image
+					<Button
 						Grid.Column="1"
-						x:Name="PreviewImageConverted"
-						Margin="2.5,0,0,0"
-						Stretch="Uniform"
-						RenderOptions.BitmapScalingMode="NearestNeighbor"
+						Style="{StaticResource SecondaryButton}"
+						Margin="10,0,0,0"
+						Width="40"
+						Content="📁"
+						Click="OnPathButtonClick"
 					/>
 				</Grid>
-			</Border>
 
-			<Button
-				Style="{StaticResource Button}"
-				Margin="0,20,0,0"
-				Content="Export"
-				Click="OnSaveButtonClick"
-			/>
-		</StackPanel>
+				<TextBlock
+					Style="{StaticResource TitleTextBlock}"
+					Text="Preview"
+				/>
+
+				<Border
+					SnapsToDevicePixels="True"
+					Height="100"
+					Padding="5"
+					CornerRadius="5"
+					Background="{StaticResource ThemeBg3}"
+					BorderThickness="1"
+					BorderBrush="{StaticResource ThemeBg4}"
+				>
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition/>
+							<ColumnDefinition/>
+						</Grid.ColumnDefinitions>
+					
+						<Image
+							x:Name="PreviewImageOriginal"
+							Margin="0,0,2.5,0"
+							Stretch="Uniform"
+							RenderOptions.BitmapScalingMode="NearestNeighbor"
+						/>
+
+						<Image
+							Grid.Column="1"
+							x:Name="PreviewImageConverted"
+							Margin="2.5,0,0,0"
+							Stretch="Uniform"
+							RenderOptions.BitmapScalingMode="NearestNeighbor"
+						/>
+					</Grid>
+				</Border>
+			</StackPanel>
+		</ScrollViewer>
+
+		<Button
+			Grid.Row="1"
+			Style="{StaticResource Button}"
+			Margin="50,20,50,20"
+			Content="Export .h"
+			Click="OnSaveButtonClick"
+		/>
 	</Grid>
 </UserControl>
