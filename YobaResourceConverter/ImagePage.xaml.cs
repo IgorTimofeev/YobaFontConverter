@@ -29,10 +29,15 @@ public partial class ImagePage : UserControl {
 	public ImagePage() {
 		InitializeComponent();
 
+		if (!DesignerProperties.GetIsInDesignMode(this)) {
+			UpdateVisualsFromSettings();
+			Render();
+		}
+
 		RenderTimer = new(
 			TimeSpan.FromMilliseconds(500),
 			DispatcherPriority.ApplicationIdle,
-			async (s, e) => {
+			(s, e) => {
 				RenderTimer!.Stop();
 
 				Render();
@@ -41,11 +46,6 @@ public partial class ImagePage : UserControl {
 		);
 
 		RenderTimer.Stop();
-
-		if (!DesignerProperties.GetIsInDesignMode(this)) {
-			UpdateVisualsFromSettings();
-			Render();
-		}
 	}
 
 	readonly DispatcherTimer RenderTimer;

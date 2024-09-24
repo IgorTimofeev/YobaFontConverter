@@ -25,6 +25,11 @@ public partial class FontPage : UserControl {
 	public FontPage() {
 		InitializeComponent();
 
+		if (!DesignerProperties.GetIsInDesignMode(this)) {
+			UpdateVisualsFromSettings();
+			Render();
+		}
+
 		// Rendering callbacks
 		RenderTimer = new(
 			TimeSpan.FromMilliseconds(500),
@@ -52,7 +57,7 @@ public partial class FontPage : UserControl {
 			textBox.TextChanged += (s, e) => {
 				if (
 					textBox.Text.Length == 0
-					|| int.TryParse(textBox.Text, out var value)
+					|| !int.TryParse(textBox.Text, out var value)
 				)
 					return;
 
@@ -65,11 +70,6 @@ public partial class FontPage : UserControl {
 		addTextBoxRenderCallback(FontSizeTextBox, o => App.Settings.Font.Size = o);
 		addTextBoxRenderCallback(GlyphsFromTextBox, o => App.Settings.Font.From = o);
 		addTextBoxRenderCallback(GlyphsToTextBox, o => App.Settings.Font.To = o);
-
-		if (!DesignerProperties.GetIsInDesignMode(this)) {
-			UpdateVisualsFromSettings();
-			Render();
-		}
 	}
 
 	FormattedText[]? GlyphsFormattedTexts = null;
